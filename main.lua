@@ -6,11 +6,12 @@ QQ登陆
 --require("TSLib")
 --require "req_tab1"
 --require "abc"
-require "tools"
+--require "tools"
 
 --iphone_path="/var/mobile/Media/TouchSprite/lua/"
-XXT_PHONE_PATH="/var/mobile/Media/1ferver/lua/scripts/"
+XXT_PHONE_PATH="/var/mobile/Media/1ferver/lua/scripts/xxt_tianlongbabu/"
 
+dofile(XXT_PHONE_PATH.."COMMON_TOOLS.lua")
 dofile(XXT_PHONE_PATH.."TAB_ENV.lua")
 dofile(XXT_PHONE_PATH.."VAR_SERIALIZE.lua")
 dofile(XXT_PHONE_PATH.."XXT_TOUCH_COMMON.lua")
@@ -193,3 +194,51 @@ function task_by_order(list1)
 		mmsleep(1000)
 	end
 end
+
+function click_popup_window()
+	
+	if multi_col({
+	{  527,  192, 0xbcb09c},
+	{  583,  194, 0x381e07},
+	{  386,  274, 0x381e07},
+	{  685,  423, 0xe3aa51},
+}) then
+	ltap(685,  423)
+	end
+	
+end
+
+function click_by_task()
+	if multi_col({
+	{  471,  539, 0x81e809},
+	{  492,  549, 0xeaf1f5},
+	{  564,  527, 0x90b163},
+}) then
+	ltap(564,  527)
+	end	
+end
+
+
+task1 = thread.dispatch( -- 派发一个异步任务
+    function()
+		while (true) do
+			mmsleep(2000)
+			ttoast("226 before click_popup_window()")
+			mmsleep(3000)
+			click_popup_window()
+		end
+    end
+)
+
+task2 = thread.dispatch( -- 派发一个异步任务
+    function()
+		while (true) do 
+			mmsleep(1000)
+			ttoast("236 before click_by_task()")
+			click_by_task()
+		end
+    end
+)
+
+
+--dialog(trim1("             sdfsdfs                    "))
