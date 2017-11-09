@@ -1,12 +1,4 @@
---[[
-2017-10-19
-QQ登陆
-王者荣耀
---]]
 --require("TSLib")
---require "req_tab1"
---require "abc"
---require "tools"
 
 --iphone_path="/var/mobile/Media/TouchSprite/lua/"
 XXT_PHONE_PATH="/var/mobile/Media/1ferver/lua/scripts/xxt_tianlongbabu/"
@@ -78,32 +70,21 @@ ttoast("屏幕已解锁，脚本开始")
 init_screen(1)
 init("com.tencent.cyoutstl",1)
 
---dofile(iphone_path.."main1.lua")
-mmsleep(1000)
-
 if front_app() == "com.tencent.xin" then
-		wwlog("74 微信程序ing...")
-	elseif  front_app() ~= "com.tencent.cyoutstl" then
-		mmsleep(200)
-		open_app("com.tencent.cyoutstl")
-		wwlog("game start")
-		--mmsleep(7000)
-		--ltap( 565,  332) --点击跳过动画
-		--wwlog("93 --点击跳过动画")
-		mmsleep(2000)
-		--before_game = 'Y'
-	end
-	
-
-if  isFrontApp("com.tencent.smoba") == 0 then
+	wwlog("74 微信程序ing...")
+elseif  front_app() ~= "com.tencent.cyoutstl" then
 	mmsleep(200)
-	runApp("com.tencent.smoba")
-	mmsleep(1000)
+	open_app("com.tencent.cyoutstl")
+	wwlog("game start")
+	--mmsleep(7000)
+	--ltap( 565,  332) --点击跳过动画
+	--wwlog("93 --点击跳过动画")
+	mmsleep(2000)		
 end
 
-set_jue_se()
 record_var1(VAR_LIST1)
 
+--[[
 co1 = coroutine.create( function() 
 		while true do
 			--for i = 1,2 do
@@ -119,9 +100,9 @@ function cor_pop_up1()
 	if a then
 		ttoast(tostring(b))
 	end
-
 	return b
 end
+--]]
 
 --pushmsg("title","msg11")
 
@@ -131,34 +112,48 @@ end
 --mmsleep(3000)
 --cor_pop_up1()
 
-
 dofile(XXT_PHONE_PATH.."pick_color.lua")
-mmsleep(1000)
+--mmsleep(1000)
 
 list1= List.new()
+List.pushlast(list1,page_login_entrance.button_wx)
+List.pushlast(list1,page_login_entrance.enter_game)
+List.pushlast(list1,page_login_entrance.player_enter_game)
 
-List.pushlast(list1,page_login_entrance.button_qq)
-List.pushlast(list1,page_login_auth_qq.button_login)
+
+list3= List.new()
+List.pushlast(list3,page_login_entrance.enter_game)
+List.pushlast(list1,page_login_entrance.player_enter_game)
+
+list4= List.new()
+List.pushlast(list4,page_login_entrance.player_enter_game)
+
+
+list2= List.new()
+List.pushlast(list2,page_popup.new_version_update)
+List.pushlast(list2,page_popup.tips_ok1)
+List.pushlast(list2,page_popup.notice_ok1)
 
 
 function task_by_loop(list1)
 	-- body
-	while (true) do
+	--while (true) do
 		for k,v in pairs (list1) do
 			--print(k)
 			if k ~= 'first' and k ~= 'last' then
-				nLog("k:"..k)
+				--nLog("k:"..k)
 				if multi_col(v) then
-					nLog("multi_col(v)")			
+					--nLog("multi_col(v)")			
 					local click_x,click_y = getClickXY(v)	
 					tap(click_x,  click_y)
 				end 
 				--print_r(v)
+				mmsleep(1000)
 			end
 			mmsleep(1000)
 		end
 		mmsleep(1000)
-	end
+	--end
 end
 
 function  getListSize(list1)
@@ -178,67 +173,130 @@ end
 function task_by_order(list1)
 	-- body	
 	--for i =1, getListSize(list1) do
-	while (true) do
+	--while (true) do
 		-- body
-		local first_value = List.getfirst(list1)
-
-		local click_x,click_y = getClickXY(first_value)	
-		if multi_col(first_value) then
-			nLog("multi_col(first_value)")
-			List.popfirst(list1)			
-			tap(click_x,  click_y)
+		if list1.first <= list1.last then
+			local first_value = List.getfirst(list1)		
+			local click_x,click_y = getClickXY(first_value)	
+			if multi_col(first_value) then				
+				if list1.first <= list1.last then
+					List.popfirst(list1)
+				end
+				tap(click_x,  click_y)
+			end
+			mmsleep(1000)
 		end
 		if getListSize(list1) == 0 then
-			break
+			--break
+			print("break")
 		end
 		mmsleep(1000)
-	end
+	--end
 end
 
 function click_popup_window()
-	
 	if multi_col({
-	{  527,  192, 0xbcb09c},
-	{  583,  194, 0x381e07},
-	{  386,  274, 0x381e07},
-	{  685,  423, 0xe3aa51},
+			{  527,  192, 0xbcb09c},
+			{  583,  194, 0x381e07},
+			{  386,  274, 0x381e07},
+			{  685,  423, 0xe3aa51},
+			}) then
+		ltap(685,  423)
+	elseif multi_col({
+			{  548,  190, 0x381e07},
+			{  582,  188, 0x391f08},
+			{  543,  417, 0xeabf6c},
+			{  571,  419, 0xfef7d4},
+			}) then
+		ltap(571,  419)
+		wwlog("214 提示，点击确定")
+		write_object_to_file("214 提示，点击确定", XXT_PHONE_PATH.."test2.txt")
+
+	elseif multi_col({
+			{   74,  119, 0xe2bf77},
+			{   77,  171, 0xc69953},
+			{  544,  521, 0xe9bd6a},
+			{  568,  526, 0xe4ab52},
+			}) then
+		ltap(568,  526)
+		wwlog("214 系统公告")
+		write_object_to_file("214 系统公告", XXT_PHONE_PATH.."test2.txt")
+	elseif multi_col({
+	{  659,  501, 0x007aff},
+	{  658,  469, 0x007aff},
+	{  667,  435, 0x007aff},
+	{  670,  403, 0x007aff},
 }) then
-	ltap(685,  423)
+		ltap(670,  403)
+		wwlog("214 微信-不再提示")
 	end
-	
+
 end
 
 function click_by_task()
 	if multi_col({
-	{  471,  539, 0x81e809},
-	{  492,  549, 0xeaf1f5},
-	{  564,  527, 0x90b163},
-}) then
-	ltap(564,  527)
+			{  471,  539, 0x81e809},
+			{  492,  549, 0xeaf1f5},
+			{  564,  527, 0x90b163},
+			}) then
+		ltap(564,  527)
+		wwlog("218 选择微信登陆")
+
+		write_object_to_file("218 选择微信登陆", XXT_PHONE_PATH.."test.txt")
+	elseif multi_col({
+			{  509,  538, 0xdead64},
+			{  535,  542, 0xf1f5de},
+			{  565,  539, 0xd9a762},
+			{  609,  538, 0xf7f7f3},
+			}) then
+		ltap(609,  538)
+		wwlog("218 进入游戏")
+		--nLog( table_to_str({222,333}))
 	end	
 end
 
 
 task1 = thread.dispatch( -- 派发一个异步任务
-    function()
+	function()
 		while (true) do
 			mmsleep(2000)
-			ttoast("226 before click_popup_window()")
-			mmsleep(3000)
-			click_popup_window()
+			nLog("260 before task_by_loop()")
+			--mmsleep(3000)
+			--click_popup_window()
+			task_by_loop(list2)
 		end
-    end
+	end
 )
 
 task2 = thread.dispatch( -- 派发一个异步任务
-    function()
+	function()
 		while (true) do 
 			mmsleep(1000)
-			ttoast("236 before click_by_task()")
-			click_by_task()
+			nLog("266 before task_by_order()")
+			--click_by_task()
+			task_by_order(list1)
 		end
-    end
+	end
 )
 
+task3 = thread.dispatch( -- 派发一个异步任务
+	function()
+		while (true) do 
+			mmsleep(1000)
+			nLog("277 before task_by_order()")
+			--click_by_task()
+			task_by_order(list3)
+		end
+	end
+)
 
---dialog(trim1("             sdfsdfs                    "))
+task4 = thread.dispatch( -- 派发一个异步任务
+	function()
+		while (true) do 
+			mmsleep(1000)
+			nLog("297 before task_by_order()")
+			--click_by_task()
+			task_by_order(list4)
+		end
+	end
+)

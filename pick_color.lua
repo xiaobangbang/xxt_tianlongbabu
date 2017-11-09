@@ -14,3 +14,83 @@ page_login_auth_qq={}
 page_login_auth_qq.button_login={{  869,  342, 0xffffff},{  874,  336, 0x00aced},{  879,  304, 0xffffff},{  890,  304, 0xffffff},}
 page_login_auth_qq.link_change_qq={{   75,  143, 0xffffff},{   91,  121, 0xffffff},{   78,   66, 0xffffff},}
 
+
+page_login_entrance.button_wx={
+	{  471,  539, 0x81e809},
+	{  492,  549, 0xeaf1f5},
+	{  564,  527, 0x90b163},
+}
+
+page_login_entrance.enter_game= {
+	{  509,  538, 0xdead64},
+	{  535,  542, 0xf1f5de},
+	{  565,  539, 0xd9a762},
+	{  609,  538, 0xf7f7f3},
+}
+
+page_login_entrance.player_enter_game={
+	{  945,  582, 0xdead63},
+	{  943,  597, 0xdea05b},
+	{  967,  587, 0xefead0},
+	{ 1000,  581, 0xdbaa62},
+}
+
+
+page_popup={}
+page_popup.new_version_update={
+			{  527,  192, 0xbcb09c},
+			{  583,  194, 0x381e07},
+			{  386,  274, 0x381e07},
+			{  685,  423, 0xe3aa51},
+		}
+page_popup.tips_ok1={
+			{  548,  190, 0x381e07},
+			{  582,  188, 0x391f08},
+			{  543,  417, 0xeabf6c},
+			{  571,  419, 0xfef7d4},
+		}
+page_popup.notice_ok1 = {
+			{   74,  119, 0xe2bf77},
+			{   77,  171, 0xc69953},
+			{  544,  521, 0xe9bd6a},
+			{  568,  526, 0xe4ab52},
+		}
+		
+
+--[[
+if multi_col({
+			{  527,  192, 0xbcb09c},
+			{  583,  194, 0x381e07},
+			{  386,  274, 0x381e07},
+			{  685,  423, 0xe3aa51},
+			}) then
+		ltap(685,  423)
+	elseif multi_col({
+			{  548,  190, 0x381e07},
+			{  582,  188, 0x391f08},
+			{  543,  417, 0xeabf6c},
+			{  571,  419, 0xfef7d4},
+			}) then
+		ltap(571,  419)
+		wwlog("214 提示，点击确定")
+		write_object_to_file("214 提示，点击确定", XXT_PHONE_PATH.."test2.txt")
+
+	elseif multi_col({
+			{   74,  119, 0xe2bf77},
+			{   77,  171, 0xc69953},
+			{  544,  521, 0xe9bd6a},
+			{  568,  526, 0xe4ab52},
+			}) then
+		ltap(568,  526)
+		wwlog("214 系统公告")
+		write_object_to_file("214 系统公告", XXT_PHONE_PATH.."test2.txt")
+	elseif multi_col({
+	{  659,  501, 0x007aff},
+	{  658,  469, 0x007aff},
+	{  667,  435, 0x007aff},
+	{  670,  403, 0x007aff},
+}) then
+		ltap(670,  403)
+		wwlog("214 微信-不再提示")
+	end
+--]]

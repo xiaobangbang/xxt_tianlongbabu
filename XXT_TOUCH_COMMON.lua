@@ -210,3 +210,5 @@ function getClickXY(color_arr)
 	return click_x,click_y
 	-- body
 end
+
+
