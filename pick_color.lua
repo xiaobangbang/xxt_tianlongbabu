@@ -15,25 +15,80 @@ page_login_auth_qq.button_login={{  869,  342, 0xffffff},{  874,  336, 0x00aced}
 page_login_auth_qq.link_change_qq={{   75,  143, 0xffffff},{   91,  121, 0xffffff},{   78,   66, 0xffffff},}
 
 
-page_login_entrance.button_wx={
-	{  471,  539, 0x81e809},
-	{  492,  549, 0xeaf1f5},
-	{  564,  527, 0x90b163},
-}
+page_login_entrance.button_wx={}
+page_login_entrance.button_wx.colors={
+	{
+		{  471,  539, 0x81e809},
+		{  492,  549, 0xeaf1f5},
+		{  564,  527, 0x90b163},
+	}, 
+	{
+		{  471,  539, 0x81e809},
+		{  492,  549, 0xeaf1f5},
+		{  564,  527, 0x90b163},
+	}}
+page_login_entrance.button_wx.click_xy={564,  527}
+page_login_entrance.button_wx.step="page_login_entrance.button_wx"
+page_login_entrance.button_wx.logmsg="选择微信登陆"
 
-page_login_entrance.enter_game= {
+
+page_login_entrance.button_besure_wx={}
+page_login_entrance.button_besure_wx.color={
+	{  908,  326, 0x04be02},
+	{  932,  373, 0xffffff},
+	{  937,  347, 0xffffff},
+	{  936,  310, 0xffffff},
+	{  925,  302, 0x04be02},
+}
+page_login_entrance.button_besure_wx.step="page_login_entrance.button_besure_wx"
+page_login_entrance.button_besure_wx.logmsg="微信授权-确认登陆"
+
+page_login_entrance.enter_game={}
+page_login_entrance.enter_game.color= {
 	{  509,  538, 0xdead64},
 	{  535,  542, 0xf1f5de},
 	{  565,  539, 0xd9a762},
 	{  609,  538, 0xf7f7f3},
 }
+page_login_entrance.enter_game.logmsg="进入游戏"
 
-page_login_entrance.player_enter_game={
+
+page_login_entrance.create_player={}
+page_login_entrance.create_player.color={
+	{  947,  582, 0xdead64},
+	{  946,  603, 0xdea05b},
+	{  994,  582, 0xf7f7ef},
+	{ 1021,  588, 0xefedcc},
+}
+page_login_entrance.create_player.step="page_login_entrance.create_player"
+page_login_entrance.create_player.logmsg="创建角色,默认天龙-男"
+page_login_entrance.create_player.foo= function ()  
+	tap(1079,  512)
+	mmsleep(500)
+	tap(1021,  588)
+	nLog("点击签筒，重新获取名字")
+	end
+
+page_login_entrance.player_name_exist={}
+page_login_entrance.player_name_exist.color={
+	{  534,  413, 0xedc670},
+	{  535,  427, 0xe1a14a},
+	{  559,  421, 0xfcf5d1},
+	{  579,  419, 0xfef7d4},
+}
+
+page_login_entrance.player_name_exist.step="page_login_entrance.create_player"
+page_login_entrance.player_name_exist.logmsg="角色名称重复"
+
+
+page_login_entrance.player_enter_game={}
+page_login_entrance.player_enter_game.color={
 	{  945,  582, 0xdead63},
 	{  943,  597, 0xdea05b},
 	{  967,  587, 0xefead0},
 	{ 1000,  581, 0xdbaa62},
 }
+page_login_entrance.player_enter_game.logmsg="选定角色后点击进入游戏"
 
 
 page_popup={}
@@ -43,19 +98,23 @@ page_popup.new_version_update={
 			{  386,  274, 0x381e07},
 			{  685,  423, 0xe3aa51},
 		}
-page_popup.tips_ok1={
+page_popup.tips_ok1={}		
+page_popup.tips_ok1.color={
 			{  548,  190, 0x381e07},
 			{  582,  188, 0x391f08},
 			{  543,  417, 0xeabf6c},
 			{  571,  419, 0xfef7d4},
 		}
-page_popup.notice_ok1 = {
+page_popup.tips_ok1.logmsg="弹出提示信息"
+
+page_popup.notice_ok1={}		
+page_popup.notice_ok1.color = {
 			{   74,  119, 0xe2bf77},
 			{   77,  171, 0xc69953},
 			{  544,  521, 0xe9bd6a},
 			{  568,  526, 0xe4ab52},
 		}
-		
+page_popup.notice_ok1.logmsg="公告，点击确定"		
 
 --[[
 if multi_col({

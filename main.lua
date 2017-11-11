@@ -116,7 +116,7 @@ dofile(XXT_PHONE_PATH.."pick_color.lua")
 --mmsleep(1000)
 
 list1= List.new()
-List.pushlast(list1,page_login_entrance.button_wx)
+--List.pushlast(list1,page_login_entrance.button_wx)
 List.pushlast(list1,page_login_entrance.enter_game)
 List.pushlast(list1,page_login_entrance.player_enter_game)
 
@@ -134,6 +134,17 @@ List.pushlast(list2,page_popup.new_version_update)
 List.pushlast(list2,page_popup.tips_ok1)
 List.pushlast(list2,page_popup.notice_ok1)
 
+list0= List.new()
+List.pushlast(list0,page_login_entrance.button_wx)
+List.pushlast(list0,page_login_entrance.button_besure_wx)
+List.pushlast(list0,page_popup.notice_ok1)
+List.pushlast(list0,page_popup.tips_ok1)
+List.pushlast(list0,page_login_entrance.enter_game)
+List.pushlast(list0,page_login_entrance.create_player)
+List.pushlast(list0,page_login_entrance.player_enter_game)
+
+list01= List.new()
+List.pushlast(list01,page_login_entrance.player_name_exist)
 
 function task_by_loop(list1)
 	-- body
@@ -148,12 +159,60 @@ function task_by_loop(list1)
 					tap(click_x,  click_y)
 				end 
 				--print_r(v)
-				mmsleep(1000)
+				--mmsleep(1000)
 			end
-			mmsleep(1000)
+			--mmsleep(1000)
 		end
 		mmsleep(1000)
 	--end
+end
+
+function dosomething2(v_color,v)
+	if v.click_xy ~= nil then
+		nLog(v.click_xy)
+		local click_x,click_y = getClickXY({v.click_xy})	
+		tap(click_x,  click_y)
+		nLog(v.step)
+		wwlog(v.logmsg)
+	else
+		if v.foo ~= nil then
+			v.foo()		
+		else	
+			local click_x,click_y = getClickXY(v_color)	
+			tap(click_x,  click_y)
+			nLog(v.step)
+			wwlog(v.logmsg)
+		end	
+	end
+end
+
+function task_by_loop2(list1)
+	for k,v in pairs (list1) do
+		--nLog(k)
+		--nLog(v)
+		if k ~= 'first' and k ~= 'last' then
+			local colors
+			if v.color ~= nil then
+				colors = {v.color}
+			else
+				colors = v.colors
+			end
+			for k1,v1 in pairs(colors )	do 
+				if multi_col(v1) then
+					local click_x,click_y = getClickXY(v1)	
+					--tap(click_x,  click_y)
+					nLog(v.step)
+					nLog(v.logmsg)
+					
+					dosomething2(v1,v)
+					mmsleep(1000)
+					break
+				end
+				--mmsleep(1000)
+			end						
+		end
+		--mmsleep(1000)
+	end
 end
 
 function  getListSize(list1)
@@ -194,109 +253,28 @@ function task_by_order(list1)
 	--end
 end
 
-function click_popup_window()
-	if multi_col({
-			{  527,  192, 0xbcb09c},
-			{  583,  194, 0x381e07},
-			{  386,  274, 0x381e07},
-			{  685,  423, 0xe3aa51},
-			}) then
-		ltap(685,  423)
-	elseif multi_col({
-			{  548,  190, 0x381e07},
-			{  582,  188, 0x391f08},
-			{  543,  417, 0xeabf6c},
-			{  571,  419, 0xfef7d4},
-			}) then
-		ltap(571,  419)
-		wwlog("214 提示，点击确定")
-		write_object_to_file("214 提示，点击确定", XXT_PHONE_PATH.."test2.txt")
-
-	elseif multi_col({
-			{   74,  119, 0xe2bf77},
-			{   77,  171, 0xc69953},
-			{  544,  521, 0xe9bd6a},
-			{  568,  526, 0xe4ab52},
-			}) then
-		ltap(568,  526)
-		wwlog("214 系统公告")
-		write_object_to_file("214 系统公告", XXT_PHONE_PATH.."test2.txt")
-	elseif multi_col({
-	{  659,  501, 0x007aff},
-	{  658,  469, 0x007aff},
-	{  667,  435, 0x007aff},
-	{  670,  403, 0x007aff},
-}) then
-		ltap(670,  403)
-		wwlog("214 微信-不再提示")
-	end
-
-end
-
-function click_by_task()
-	if multi_col({
-			{  471,  539, 0x81e809},
-			{  492,  549, 0xeaf1f5},
-			{  564,  527, 0x90b163},
-			}) then
-		ltap(564,  527)
-		wwlog("218 选择微信登陆")
-
-		write_object_to_file("218 选择微信登陆", XXT_PHONE_PATH.."test.txt")
-	elseif multi_col({
-			{  509,  538, 0xdead64},
-			{  535,  542, 0xf1f5de},
-			{  565,  539, 0xd9a762},
-			{  609,  538, 0xf7f7f3},
-			}) then
-		ltap(609,  538)
-		wwlog("218 进入游戏")
-		--nLog( table_to_str({222,333}))
-	end	
-end
-
-
 task1 = thread.dispatch( -- 派发一个异步任务
 	function()
 		while (true) do
-			mmsleep(2000)
+			mmsleep(1000)
 			nLog("260 before task_by_loop()")
 			--mmsleep(3000)
 			--click_popup_window()
-			task_by_loop(list2)
+			task_by_loop2(list0)
 		end
 	end
 )
 
-task2 = thread.dispatch( -- 派发一个异步任务
+task2= thread.dispatch( -- 派发一个异步任务
 	function()
-		while (true) do 
+		while (true) do
 			mmsleep(1000)
-			nLog("266 before task_by_order()")
-			--click_by_task()
-			task_by_order(list1)
+			nLog("270 before task_by_loop()")
+			--mmsleep(3000)
+			--click_popup_window()
+			task_by_loop2(list01)
 		end
 	end
 )
 
-task3 = thread.dispatch( -- 派发一个异步任务
-	function()
-		while (true) do 
-			mmsleep(1000)
-			nLog("277 before task_by_order()")
-			--click_by_task()
-			task_by_order(list3)
-		end
-	end
-)
 
-task4 = thread.dispatch( -- 派发一个异步任务
-	function()
-		while (true) do 
-			mmsleep(1000)
-			nLog("297 before task_by_order()")
-			--click_by_task()
-			task_by_order(list4)
-		end
-	end
-)
