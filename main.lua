@@ -1,5 +1,5 @@
 --require("TSLib")
-
+SLEEP_TIME=3000
 --iphone_path="/var/mobile/Media/TouchSprite/lua/"
 XXT_PHONE_PATH="/var/mobile/Media/1ferver/lua/scripts/xxt_tianlongbabu/"
 
@@ -8,24 +8,6 @@ dofile(XXT_PHONE_PATH.."TAB_ENV.lua")
 dofile(XXT_PHONE_PATH.."VAR_SERIALIZE.lua")
 dofile(XXT_PHONE_PATH.."XXT_TOUCH_COMMON.lua")
 --dofile(iphone_path.."pushover.lua")
-
-function set_jue_se(...)
-	wwlog("298 判断是否是仓库号")
-	mmsleep(100)	
-
-	wwlog(tostring(VAR_LIST1.tianlei_flag))
-	VAR_LIST1.tianlei_flag = true
-	wwlog(tostring(VAR_LIST1.tianlei_flag))
-	VAR_LIST1.init_setup = true
-	fuli_flag = true
-	in_game = false
-
-	VAR_LIST1.bag_is_ready = true
-	wwlog("340 是仓库号,直接去交易")
-
-	-- body
-end
-
 
 function record_var1(o)
 	local out =assert(io.open(XXT_PHONE_PATH.."VAR_SERIALIZE.lua","w"))
@@ -145,25 +127,32 @@ List.pushlast(list0,page_login_entrance.player_enter_game)
 
 list01= List.new()
 List.pushlast(list01,page_login_entrance.player_name_exist)
+List.pushlast(list01,page_login_entrance.player_direct_game)
+List.pushlast(list01,page_login_entrance.net_lost_window)
+
+
+list02= List.new()
+List.pushlast(list02,page_login_entrance.in_game_training)
+
 
 function task_by_loop(list1)
 	-- body
 	--while (true) do
-		for k,v in pairs (list1) do
-			--print(k)
-			if k ~= 'first' and k ~= 'last' then
-				--nLog("k:"..k)
-				if multi_col(v) then
-					--nLog("multi_col(v)")			
-					local click_x,click_y = getClickXY(v)	
-					tap(click_x,  click_y)
-				end 
-				--print_r(v)
-				--mmsleep(1000)
-			end
+	for k,v in pairs (list1) do
+		--print(k)
+		if k ~= 'first' and k ~= 'last' then
+			--nLog("k:"..k)
+			if multi_col(v) then
+				--nLog("multi_col(v)")			
+				local click_x,click_y = getClickXY(v)	
+				tap(click_x,  click_y)
+			end 
+			--print_r(v)
 			--mmsleep(1000)
 		end
-		mmsleep(1000)
+		--mmsleep(1000)
+	end
+	mmsleep(1000)
 	--end
 end
 
@@ -187,6 +176,7 @@ function dosomething2(v_color,v)
 end
 
 function task_by_loop2(list1)
+	local ret = nil
 	for k,v in pairs (list1) do
 		--nLog(k)
 		--nLog(v)
@@ -199,13 +189,27 @@ function task_by_loop2(list1)
 			end
 			for k1,v1 in pairs(colors )	do 
 				if multi_col(v1) then
+					ret = "in"
 					local click_x,click_y = getClickXY(v1)	
 					--tap(click_x,  click_y)
 					nLog(v.step)
 					nLog(v.logmsg)
-					
+
 					dosomething2(v1,v)
-					mmsleep(1000)
+					mmsleep(SLEEP_TIME)
+					
+					--小于当前任务号的,且在某一个数组中的task都KIll，
+					if v.task_id ~=nil then
+						--thread.kill(5)
+						ret="kill"
+					end
+					 
+					--大于当前任务号的,且在某一个数组中的开关都置为ON， 
+					if v.end_flag then
+						ret = "next_on"
+						nLog("if v.end_flag then")
+					end
+					--VAR_LIST1.IN_GAME_SWITCH="ON"
 					break
 				end
 				--mmsleep(1000)
@@ -213,6 +217,7 @@ function task_by_loop2(list1)
 		end
 		--mmsleep(1000)
 	end
+	return ret
 end
 
 function  getListSize(list1)
@@ -233,48 +238,167 @@ function task_by_order(list1)
 	-- body	
 	--for i =1, getListSize(list1) do
 	--while (true) do
-		-- body
-		if list1.first <= list1.last then
-			local first_value = List.getfirst(list1)		
-			local click_x,click_y = getClickXY(first_value)	
-			if multi_col(first_value) then				
-				if list1.first <= list1.last then
-					List.popfirst(list1)
-				end
-				tap(click_x,  click_y)
+	-- body
+	if list1.first <= list1.last then
+		local first_value = List.getfirst(list1)		
+		local click_x,click_y = getClickXY(first_value)	
+		if multi_col(first_value) then				
+			if list1.first <= list1.last then
+				List.popfirst(list1)
 			end
-			mmsleep(1000)
-		end
-		if getListSize(list1) == 0 then
-			--break
-			print("break")
+			tap(click_x,  click_y)
 		end
 		mmsleep(1000)
+	end
+	if getListSize(list1) == 0 then
+		--break
+		print("break")
+	end
+	mmsleep(1000)
 	--end
 end
 
+task0 = thread.dispatch( -- 派发一个异步任务
+	function()
+		while(true) do 							
+			nLog("249 backgroud monitor thread ")			
+			mmsleep(SLEEP_TIME)
+		end
+	end
+)
+nLog("task0:"..tostring(task0))
+task_list={}
+
+function ttkill(task_id) 
+
+	for k,v in pairs(task_list) do
+		nLog(v.id)
+		if v.id < task_id then
+			thread.kill(v.id)
+			nLog("thread.kill(v.id)")
+		end
+	end
+end
+
+function ttswitch_off(task_id) 
+
+	for k,v in pairs(task_list) do
+		if v.id > task_id then
+		for k1,v1 in pairs(v) do				
+				if k1~= "id" and k1~="info" then
+					--nLog(k1)
+					local loadstr="task_list["..tostring(k).."]."..k1.."='OFF'"
+					--nLog(loadstr)
+					f1=load(loadstr)
+					f1()
+					
+					local loadstr2="VAR_LIST1."..k1.."='OFF'"
+					nLog(loadstr2)
+					f2=load(loadstr2)
+					f2()
+					--task_list[1].LOGIN_SWITCH=1
+				end
+				--nLog(v1)
+		end	
+		end
+	end
+end
+
+
+function ttswitch_on(task_id) 
+
+	for k,v in pairs(task_list) do
+		if v.id > task_id then
+		for k1,v1 in pairs(v) do				
+				if k1~= "id" and k1~="info" then
+					--nLog(k1)
+					local loadstr="task_list["..tostring(k).."]."..k1.."='ON'"
+					--nLog(loadstr)
+					f1=load(loadstr)
+					f1()
+					
+					local loadstr2="VAR_LIST1."..k1.."='ON'"
+					nLog(loadstr2)
+					f2=load(loadstr2)
+					f2()
+					--task_list[1].LOGIN_SWITCH=1
+				end
+				--nLog(v1)
+		end	
+		end
+	end
+end
+
+--登录模块，
 task1 = thread.dispatch( -- 派发一个异步任务
 	function()
-		while (true) do
-			mmsleep(1000)
-			nLog("260 before task_by_loop()")
-			--mmsleep(3000)
-			--click_popup_window()
-			task_by_loop2(list0)
+		local ret_flag1 = true
+		while(true) do 
+			if (VAR_LIST1.LOGIN_SWITCH=="ON") then				
+				nLog("261 登录模块:thread.current_id:"..tostring( thread.current_id()))
+				--mmsleep(3000)
+				--click_popup_window()
+				local ret =task_by_loop2(list0)
+				if ret=="in" and ret_flag1 ==true then
+					ttswitch_off(thread.current_id())			
+				elseif ret =="next_on" then
+					ret_flag1 = false
+					--VAR_LIST1.IN_GAME_SWITCH="ON"
+					ttswitch_on(thread.current_id())
+					--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
+				end
+			end
+			mmsleep(SLEEP_TIME)
 		end
 	end
 )
 
+nLog("task1:"..tostring(task1))
+table.insert(task_list,{id=task1,info="登录模块",LOGIN_SWITCH="ON"})
+
+--登录成功之后，进入游戏
 task2= thread.dispatch( -- 派发一个异步任务
 	function()
+		while(true) do
+			if VAR_LIST1.IN_GAME_SWITCH=="ON" then
+				mmsleep(1000)
+				nLog("287 登录成功之后，进入游戏:thread.current_id:"..tostring( thread.current_id()))				
+				local ret = task_by_loop2(list02)
+				
+				if ret=="kill" then				
+					--thread.kill(5)
+					ttkill(thread.current_id())
+					nLog('thread.kill before:'..tostring( thread.current_id()))				
+				end
+				
+			end
+			mmsleep(SLEEP_TIME)
+			--nLog("292 after while 登录成功之后，进入游戏")
+		end
+	end
+)
+nLog("task2:"..tostring(task2))
+table.insert(task_list,{id=task2,info="登录成功之后，进入游戏",IN_GAME_SWITCH="ON"})
+
+--处理弹窗，一般以小窗口为主
+task999= thread.dispatch( -- 派发一个异步任务
+	function()
 		while (true) do
-			mmsleep(1000)
-			nLog("270 before task_by_loop()")
+			mmsleep(SLEEP_TIME)
+			nLog("274 处理弹窗，一般以小窗口为主")
 			--mmsleep(3000)
 			--click_popup_window()
 			task_by_loop2(list01)
 		end
 	end
 )
+nLog("task999:"..tostring(task999))
+--table.insert(task_list,{id=task999,info="处理弹窗，一般以小窗口为主"})
 
+nLog(task_list)
 
+function getRandomNum(...)	
+	math.randomseed(tostring(os.time()):reverse():sub(1, 7))
+	local var1 = math.random(1,100) 		
+	return var1
+end
