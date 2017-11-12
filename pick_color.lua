@@ -77,8 +77,45 @@ page_login_entrance.player_name_exist.color={
 	{  579,  419, 0xfef7d4},
 }
 
-page_login_entrance.player_name_exist.step="page_login_entrance.create_player"
+page_login_entrance.player_name_exist.step="page_login_entrance.player_name_exist"
 page_login_entrance.player_name_exist.logmsg="角色名称重复"
+
+page_login_entrance.player_direct_game={}
+page_login_entrance.player_direct_game.color={
+	{  474,  303, 0x391f08},
+	{  505,  305, 0x381e07},
+	{  519,  308, 0x381e07},
+	{  446,  423, 0xfef7d3},
+}
+page_login_entrance.player_direct_game.step="page_login_entrance.player_direct_game"
+page_login_entrance.player_direct_game.logmsg="当前角色已在线，是否直接进入游戏，点击取消"
+
+
+page_login_entrance.net_lost_window={}
+page_login_entrance.net_lost_window.color={
+	{  460,  291, 0x381e07},
+	{  474,  293, 0x391f08},
+	{  487,  291, 0x381e07},
+	{  511,  291, 0x381e07},
+	{  568,  422, 0xe4ab52},
+}
+page_login_entrance.net_lost_window.step="page_login_entrance.net_lost_window"
+page_login_entrance.net_lost_window.logmsg="与服务器断开连接，请坚持网络(345)"
+
+
+page_login_entrance.in_game_training={}
+page_login_entrance.in_game_training.color={
+	{  105,   43, 0xcd3334},
+	{  101,   52, 0x33b2bd},
+	{  207,   39, 0xcc3333},
+	{  211,   54, 0x18a8b4},
+}
+page_login_entrance.in_game_training.step="page_login_entrance.in_game_training"
+page_login_entrance.in_game_training.logmsg="角色进入游戏，开场训练"
+page_login_entrance.in_game_training.foo= function () 
+	nLog("foo 函数开场训练 ")
+	end
+page_login_entrance.in_game_training.task_id=6
 
 
 page_login_entrance.player_enter_game={}
@@ -89,7 +126,7 @@ page_login_entrance.player_enter_game.color={
 	{ 1000,  581, 0xdbaa62},
 }
 page_login_entrance.player_enter_game.logmsg="选定角色后点击进入游戏"
-
+page_login_entrance.player_enter_game.end_flag=true
 
 page_popup={}
 page_popup.new_version_update={
