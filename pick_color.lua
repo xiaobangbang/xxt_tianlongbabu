@@ -63,9 +63,9 @@ page_login_entrance.create_player.color={
 page_login_entrance.create_player.step="page_login_entrance.create_player"
 page_login_entrance.create_player.logmsg="创建角色,默认天龙-男"
 page_login_entrance.create_player.foo= function ()  
-	tap(1079,  512)
+	ltap(1079,  512)
 	mmsleep(500)
-	tap(1021,  588)
+	ltap(1021,  588)
 	nLog("点击签筒，重新获取名字")
 	end
 
@@ -127,7 +127,19 @@ page_login_entrance.player_enter_game.color={
 }
 page_login_entrance.player_enter_game.logmsg="选定角色后点击进入游戏"
 page_login_entrance.player_enter_game.end_flag=true
-
+page_login_entrance.player_enter_game.foo= function()
+	if VAR_LIST1.FIRST_ROLE =="READY" then
+		ltap(121,  167)
+		mmsleep(1500)
+		ltap(998,  587)
+		nLog('VAR_LIST1.FIRST_ROLE =="READY"')
+	elseif VAR_LIST1.SECOND_ROLE =="READY" then
+		ltap(118,  287)
+		mmsleep(1500)
+		ltap(998,  587)
+		nLog('VAR_LIST1.SECOND_ROLE =="READY"')
+	end
+end
 page_popup={}
 page_popup.new_version_update={
 			{  527,  192, 0xbcb09c},

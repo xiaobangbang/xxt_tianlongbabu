@@ -175,3 +175,9 @@ function write_object_to_file(o,filename_with_path)
 
 end
 
+function getRandomNum(n1)	
+	local n2 = n1 or 1000
+	math.randomseed(tostring(os.time()):reverse():sub(1, 7))
+	local var1 = math.random(1,n2) 		
+	return var1
+end

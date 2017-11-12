@@ -64,7 +64,7 @@ elseif  front_app() ~= "com.tencent.cyoutstl" then
 	mmsleep(2000)		
 end
 
-record_var1(VAR_LIST1)
+
 
 --[[
 co1 = coroutine.create( function() 
@@ -145,7 +145,7 @@ function task_by_loop(list1)
 			if multi_col(v) then
 				--nLog("multi_col(v)")			
 				local click_x,click_y = getClickXY(v)	
-				tap(click_x,  click_y)
+				ltap(click_x,  click_y)
 			end 
 			--print_r(v)
 			--mmsleep(1000)
@@ -160,7 +160,7 @@ function dosomething2(v_color,v)
 	if v.click_xy ~= nil then
 		nLog(v.click_xy)
 		local click_x,click_y = getClickXY({v.click_xy})	
-		tap(click_x,  click_y)
+		ltap(click_x,  click_y)
 		nLog(v.step)
 		wwlog(v.logmsg)
 	else
@@ -168,7 +168,7 @@ function dosomething2(v_color,v)
 			v.foo()		
 		else	
 			local click_x,click_y = getClickXY(v_color)	
-			tap(click_x,  click_y)
+			ltap(click_x,  click_y)
 			nLog(v.step)
 			wwlog(v.logmsg)
 		end	
@@ -246,7 +246,7 @@ function task_by_order(list1)
 			if list1.first <= list1.last then
 				List.popfirst(list1)
 			end
-			tap(click_x,  click_y)
+			ltap(click_x,  click_y)
 		end
 		mmsleep(1000)
 	end
@@ -280,7 +280,7 @@ function ttkill(task_id)
 	end
 end
 
-function ttswitch_off(task_id) 
+function ttswitch_off1(task_id) 
 
 	for k,v in pairs(task_list) do
 		if v.id > task_id then
@@ -305,7 +305,7 @@ function ttswitch_off(task_id)
 end
 
 
-function ttswitch_on(task_id) 
+function ttswitch_on1(task_id) 
 
 	for k,v in pairs(task_list) do
 		if v.id > task_id then
@@ -329,38 +329,68 @@ function ttswitch_on(task_id)
 	end
 end
 
+function ttswitch(task_id,status) 
+	for k,v in pairs(task_list) do
+		if v.id > task_id then
+			v.SWITCH = status	
+			break
+		end
+	end
+end
+
+function getSwitchStatus(task_id) 
+	for k,v in pairs(task_list) do		
+		if v.id == task_id then
+			return v.SWITCH
+		end
+	end
+end
+
 --登录模块，
 task1 = thread.dispatch( -- 派发一个异步任务
 	function()
 		local ret_flag1 = true
+		local current_thread_id = thread.current_id()
+		table.insert(task_list,{id=current_thread_id,info="登录模块",SWITCH="ON"})
 		while(true) do 
-			if (VAR_LIST1.LOGIN_SWITCH=="ON") then				
-				nLog("261 登录模块:thread.current_id:"..tostring( thread.current_id()))
+			--if (VAR_LIST1.LOGIN_SWITCH=="ON") then				
+			if getSwitchStatus(current_thread_id) =="ON" then
+				nLog("261 登录模块:thread.current_id:"..tostring( current_thread_id))
 				--mmsleep(3000)
 				--click_popup_window()
 				local ret =task_by_loop2(list0)
 				if ret=="in" and ret_flag1 ==true then
-					ttswitch_off(thread.current_id())			
+					--ttswitch_off(current_thread_id)			
+					ttswitch(current_thread_id,"OFF")
 				elseif ret =="next_on" then
 					ret_flag1 = false
 					--VAR_LIST1.IN_GAME_SWITCH="ON"
-					ttswitch_on(thread.current_id())
+					--ttswitch_on(current_thread_id)
+					ttswitch(current_thread_id,"ON")
+					---------------测试-------------------------start
+					VAR_LIST1.FIRST_ROLE="FINISHED"
+					VAR_LIST1.SECOND_ROLE="READY"
+					record_var1(VAR_LIST1)
+					---------------测试-------------------------end
 					--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
 				end
 			end
-			mmsleep(SLEEP_TIME)
+			mrsleep(SLEEP_TIME)
 		end
 	end
 )
 
 nLog("task1:"..tostring(task1))
-table.insert(task_list,{id=task1,info="登录模块",LOGIN_SWITCH="ON"})
+--table.insert(task_list,{id=task1,info="登录模块",LOGIN_SWITCH="ON"})
 
 --登录成功之后，进入游戏
 task2= thread.dispatch( -- 派发一个异步任务
 	function()
+		local current_thread_id = thread.current_id()
+		table.insert(task_list,{id=current_thread_id,info="登录成功之后，进入游戏",SWITCH="ON"})
 		while(true) do
-			if VAR_LIST1.IN_GAME_SWITCH=="ON" then
+			--if VAR_LIST1.IN_GAME_SWITCH=="ON" then
+			if getSwitchStatus(current_thread_id) =="ON" then
 				mmsleep(1000)
 				nLog("287 登录成功之后，进入游戏:thread.current_id:"..tostring( thread.current_id()))				
 				local ret = task_by_loop2(list02)
@@ -369,22 +399,23 @@ task2= thread.dispatch( -- 派发一个异步任务
 					--thread.kill(5)
 					ttkill(thread.current_id())
 					nLog('thread.kill before:'..tostring( thread.current_id()))				
-				end
-				
+				end				
+			else
+				nLog("401 test 登录成功之后，进入游戏 status OFF")
 			end
-			mmsleep(SLEEP_TIME)
+			mrsleep(SLEEP_TIME)
 			--nLog("292 after while 登录成功之后，进入游戏")
 		end
 	end
 )
 nLog("task2:"..tostring(task2))
-table.insert(task_list,{id=task2,info="登录成功之后，进入游戏",IN_GAME_SWITCH="ON"})
+--table.insert(task_list,{id=task2,info="登录成功之后，进入游戏",IN_GAME_SWITCH="ON"})
 
 --处理弹窗，一般以小窗口为主
 task999= thread.dispatch( -- 派发一个异步任务
 	function()
 		while (true) do
-			mmsleep(SLEEP_TIME)
+			mrsleep(SLEEP_TIME)
 			nLog("274 处理弹窗，一般以小窗口为主")
 			--mmsleep(3000)
 			--click_popup_window()
@@ -397,8 +428,3 @@ nLog("task999:"..tostring(task999))
 
 nLog(task_list)
 
-function getRandomNum(...)	
-	math.randomseed(tostring(os.time()):reverse():sub(1, 7))
-	local var1 = math.random(1,100) 		
-	return var1
-end
