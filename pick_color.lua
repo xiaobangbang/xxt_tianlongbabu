@@ -103,20 +103,55 @@ page_login_entrance.net_lost_window.step="page_login_entrance.net_lost_window"
 page_login_entrance.net_lost_window.logmsg="与服务器断开连接，请坚持网络(345)"
 
 
-page_login_entrance.in_game_training={}
-page_login_entrance.in_game_training.color={
+page_training={}
+
+page_training.in_game_training={}
+page_training.in_game_training.color={
 	{  105,   43, 0xcd3334},
 	{  101,   52, 0x33b2bd},
 	{  207,   39, 0xcc3333},
 	{  211,   54, 0x18a8b4},
 }
-page_login_entrance.in_game_training.step="page_login_entrance.in_game_training"
-page_login_entrance.in_game_training.logmsg="角色进入游戏，开场训练"
-page_login_entrance.in_game_training.foo= function () 
+page_training.in_game_training.step="page_login_entrance.in_game_training"
+page_training.in_game_training.logmsg="角色进入游戏，开场训练"
+page_training.in_game_training.foo= function () 
+	--xxtmoveto(145,  551,190,  326,5)
+	touch.tap(148,  489,2000)
+	
 	nLog("foo 函数开场训练 ")
 	end
-page_login_entrance.in_game_training.task_id=6
 
+page_training.first_attack={}
+page_training.first_attack.colors={
+	{
+	{  726,  539, 0xfcfcfc},
+	{  746,  541, 0xffffff},
+	{  815,  541, 0xffffff},
+	{  866,  541, 0xf9f9f9},
+},
+	{
+	{  758,  538, 0xf8f800},
+	{  769,  537, 0xffff00},
+	{  781,  540, 0xffff00},
+	{  803,  540, 0xffff00},
+},
+{
+	{  725,  539, 0xfcfcfc},
+	{  758,  542, 0xf8f800},
+	{  781,  543, 0xffff00},
+}
+}
+
+page_training.first_attack.logmsg="点击攻击键使用普攻"
+
+page_training.first_attack.foo = function() 
+	for i=1,8 do
+		ltap(1048,  542)
+		nLog("foo 点击攻击键使用普攻 ")
+		mrsleep(3000)
+	end 
+	
+end
 
 page_login_entrance.player_enter_game={}
 page_login_entrance.player_enter_game.color={

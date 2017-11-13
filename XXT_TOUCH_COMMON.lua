@@ -25,6 +25,7 @@ if TAB_ENV.LUA_VERSION == "TOUCH" then
 
 elseif TAB_ENV.LUA_VERSION == "XXT" then
 	open_app= app.run
+	close_app= app.close
 	front_app = app.front_bid
 	mmsleep = sys.msleep
 	init_screen = screen.init
@@ -211,4 +212,9 @@ function getClickXY(color_arr)
 	-- body
 end
 
-
+function mrsleep(ss)
+	local n1= getRandomNum(ss*0.3) 
+	--nLog(ss+n1)
+	mmsleep(ss+n1)
+end
+	
