@@ -1,5 +1,5 @@
 --require("TSLib")
-SLEEP_TIME=3000
+SLEEP_TIME=1000
 --iphone_path="/var/mobile/Media/TouchSprite/lua/"
 XXT_PHONE_PATH="/var/mobile/Media/1ferver/lua/scripts/xxt_tianlongbabu/"
 
@@ -70,25 +70,53 @@ dofile(XXT_PHONE_PATH.."pick_color.lua")
 list0= List.new()
 List.pushlast(list0,page_login_entrance.button_wx)
 List.pushlast(list0,page_login_entrance.button_besure_wx)
-List.pushlast(list0,page_popup.notice_ok1)
+--List.pushlast(list0,page_popup.notice_ok1)
 List.pushlast(list0,page_popup.tips_ok1)
 List.pushlast(list0,page_login_entrance.enter_game)
 List.pushlast(list0,page_login_entrance.create_player)
 List.pushlast(list0,page_login_entrance.player_enter_game)
 
+--小窗口
 list01= List.new()
 List.pushlast(list01,page_login_entrance.player_name_exist)
 List.pushlast(list01,page_login_entrance.player_direct_game)
 List.pushlast(list01,page_login_entrance.net_lost_window)
+List.pushlast(list01,page_popup.close_window1)
+List.pushlast(list01,page_popup.use_money)
+List.pushlast(list01,page_popup.notice_ok1)
+List.pushlast(list01,page_popup.first_scene)
 
 
 list02= List.new()
+--移动到第一个光圈
 List.pushlast(list02,page_training.in_game_training)
+--跳过动画
+List.pushlast(list02,page_training.skip_scene)
+--移动到第二个光圈
 List.pushlast(list02,page_training.in_game_training)
+--攻击4个强盗
 List.pushlast(list02,page_training.first_attack)
+--移动到第三个光圈--需要两次移动
 List.pushlast(list02,page_training.in_game_training)
 List.pushlast(list02,page_training.in_game_training)
+--动画过后，移动到第四个光圈--需要两次移动
+List.pushlast(list02,page_training.in_game_training)
+List.pushlast(list02,page_training.in_game_training)
+--点击技能键释放技能
+List.pushlast(list02,page_training.skill_attack)
+--领取神器，对抗丁春秋
+List.pushlast(list02,page_training.fetch_artifact)
 
+list03= List.new()
+List.pushlast(list03,page_main.main_task_guide)
+List.pushlast(list03,page_main.task_completed_guide)
+List.pushlast(list03,page_main.accept_task)
+List.pushlast(list03,page_main.arti_fact_piece_guide)
+List.pushlast(list03,page_main.arti_fact_preview_guide)
+List.pushlast(list03,page_main.arti_fact_preview_close_guide)
+List.pushlast(list03,page_main.arti_fact_close_guide)
+List.pushlast(list03,page_main.main_task_completed)
+List.pushlast(list03,page_main.task_completed)
 
 function dosomething2(v_color,v)
 	if v.click_xy ~= nil then
@@ -148,7 +176,7 @@ function task_by_order2(list1)
 	--for k,v in pairs (list1) do
 	if list1.first <= list1.last then
 		local v = List.getfirst(list1)			
-		nLog(v)
+		--nLog(v)
 		--if k ~= 'first' and k ~= 'last' then
 			local colors
 			if v.color ~= nil then
@@ -231,56 +259,6 @@ function ttkill(task_id)
 	end
 end
 
---[[
-function ttswitch_off1(task_id) 
-
-	for k,v in pairs(task_list) do
-		if v.id > task_id then
-		for k1,v1 in pairs(v) do				
-				if k1~= "id" and k1~="info" then
-					--nLog(k1)
-					local loadstr="task_list["..tostring(k).."]."..k1.."='OFF'"
-					--nLog(loadstr)
-					f1=load(loadstr)
-					f1()
-					
-					local loadstr2="VAR_LIST1."..k1.."='OFF'"
-					nLog(loadstr2)
-					f2=load(loadstr2)
-					f2()
-					--task_list[1].LOGIN_SWITCH=1
-				end
-				--nLog(v1)
-		end	
-		end
-	end
-end
-
-
-function ttswitch_on1(task_id) 
-
-	for k,v in pairs(task_list) do
-		if v.id > task_id then
-		for k1,v1 in pairs(v) do				
-				if k1~= "id" and k1~="info" then
-					--nLog(k1)
-					local loadstr="task_list["..tostring(k).."]."..k1.."='ON'"
-					--nLog(loadstr)
-					f1=load(loadstr)
-					f1()
-					
-					local loadstr2="VAR_LIST1."..k1.."='ON'"
-					nLog(loadstr2)
-					f2=load(loadstr2)
-					f2()
-					--task_list[1].LOGIN_SWITCH=1
-				end
-				--nLog(v1)
-		end	
-		end
-	end
-end
---]]
 function ttswitch(task_id,status) 
 	for k,v in pairs(task_list) do
 		if v.id > task_id then
@@ -369,6 +347,43 @@ task2= thread.dispatch( -- 派发一个异步任务
 )
 nLog("task2:"..tostring(task2))
 --table.insert(task_list,{id=task2,info="登录成功之后，进入游戏",IN_GAME_SWITCH="ON"})
+
+--游戏主界面模块
+task3 = thread.dispatch( 
+	function()
+		local ret_flag1 = true
+		local current_thread_id = thread.current_id()
+		table.insert(task_list,{id=current_thread_id,info="游戏主界面",SWITCH="ON"})
+		while(true) do 			
+			if getSwitchStatus(current_thread_id) =="ON" then
+				nLog("395 游戏主界面:thread.current_id:"..tostring( current_thread_id))
+				--mmsleep(3000)				
+				local ret =task_by_loop2(list03)
+				if ret=="in" and ret_flag1 ==true then					
+					ttswitch(current_thread_id,"OFF")
+				elseif ret =="next_on" then
+					ret_flag1 = false
+					--大于当前任务号的,且在某一个数组中的开关都置为ON， 
+					ttswitch(current_thread_id,"ON")
+					---------------测试-------------------------start
+					VAR_LIST1.FIRST_ROLE="FINISHED"
+					VAR_LIST1.SECOND_ROLE="READY"
+					record_var1(VAR_LIST1)
+					---------------测试-------------------------end
+					--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
+				end
+				
+				if (ret =="in" or ret =="next_on") and thread_kill == false then
+					thread_kill=true
+				end	
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+
+nLog("task3:"..tostring(task3))
+
 
 --处理弹窗，一般以小窗口为主
 task999= thread.dispatch( -- 派发一个异步任务

@@ -106,20 +106,84 @@ page_login_entrance.net_lost_window.logmsg="与服务器断开连接，请坚持
 page_training={}
 
 page_training.in_game_training={}
+--[[
 page_training.in_game_training.color={
 	{  105,   43, 0xcd3334},
 	{  101,   52, 0x33b2bd},
 	{  207,   39, 0xcc3333},
 	{  211,   54, 0x18a8b4},
 }
-page_training.in_game_training.step="page_login_entrance.in_game_training"
-page_training.in_game_training.logmsg="角色进入游戏，开场训练"
+--]]
+page_training.in_game_training.color={
+	{    9,   75, 0xffffff},
+	{   17,   74, 0xfdfdfc},
+	{  126,   44, 0xce3333},
+	{  125,   55, 0x12a0b2},
+}
+page_training.in_game_training.step="page_training.in_game_training"
+page_training.in_game_training.logmsg="角色进入游戏，开场训练,移动到第一个光圈"
 page_training.in_game_training.foo= function () 
 	--xxtmoveto(145,  551,190,  326,5)
-	touch.tap(148,  489,2000)
-	
+	touch.tap(148,  489,2000)	
 	nLog("foo 函数开场训练 ")
 	end
+
+page_training.skip_scene={}
+page_training.skip_scene.color={
+	{ 1099,   15, 0xfce4b3},
+	{ 1114,   15, 0xfce4b3},
+	{ 1103,   15, 0xfce4b3},
+	{ 1120,   16, 0xfbe2ad},
+}
+page_training.skip_scene.step="page_training.skip_scene"
+page_training.skip_scene.logmsg="跳过动画"
+
+
+page_training.skill_attack={}
+page_training.skill_attack.color={
+	{  785,  342, 0xffff00},
+	{  804,  343, 0xfcfd01},
+	{  831,  343, 0xfdfd01},
+	{  848,  346, 0xffffff},
+}
+page_training.skill_attack.foo=function() 
+	ltap(1001,  436)
+	mrsleep(3000)
+	ltap(1092,  435)
+	mrsleep(3000)
+	ltap(942,  501)
+	mrsleep(3000)
+	ltap(943,  594)
+	mrsleep(3000)
+	ltap(1046,  540)
+	--mrsleep(3000)
+	
+	end
+page_training.skill_attack.step="page_training.skill_attack"
+page_training.skill_attack.logmsg="点击技能键释放技能"
+
+
+
+page_training.fetch_artifact={}
+page_training.fetch_artifact.color={
+	{  527,  565, 0xebc16b},
+	{  527,  573, 0xe2a74f},
+	{  550,  568, 0xfdf6d3},
+	{  561,  569, 0xfdf5d2},
+}
+
+page_training.fetch_artifact.step="page_training.fetch_artifact"
+page_training.fetch_artifact.logmsg="领取神器，对抗丁春秋"
+page_training.fetch_artifact.end_flag = true
+page_training.fetch_artifact.foo=function() 
+	ltap( 561,  569)
+	mrsleep(3000)
+	ltap( 1094,  436)
+	mrsleep(3000)
+	ltap( 1001,  442)
+	
+	end
+
 
 page_training.first_attack={}
 page_training.first_attack.colors={
@@ -145,10 +209,10 @@ page_training.first_attack.colors={
 page_training.first_attack.logmsg="点击攻击键使用普攻"
 
 page_training.first_attack.foo = function() 
-	for i=1,8 do
+	for i=1,5 do
 		ltap(1048,  542)
 		nLog("foo 点击攻击键使用普攻 ")
-		mrsleep(3000)
+		mrsleep(4000)
 	end 
 	
 end
@@ -199,6 +263,146 @@ page_popup.notice_ok1.color = {
 			{  568,  526, 0xe4ab52},
 		}
 page_popup.notice_ok1.logmsg="公告，点击确定"		
+
+
+page_popup.close_window1={}		
+page_popup.close_window1.color = {
+	{ 1062,   51, 0xfef7b3},
+	{ 1073,   50, 0xfef7b3},
+	{ 1062,   64, 0xfef7b3},
+	{ 1079,   58, 0x542210},
+	{ 1067,   57, 0xfef7b3},
+}
+page_popup.close_window1.logmsg="活动窗口，点击关闭"
+
+
+
+page_popup.use_money={}		
+page_popup.use_money.color = {
+	{  769,  448, 0xefc873},
+	{  767,  462, 0xe0a34c},
+	{  776,  459, 0xfef7d3},
+	{  796,  454, 0xfff8d5},
+	{  808,  459, 0xfff8d5},
+}
+page_popup.use_money.logmsg="使用铜钱"	
+
+
+page_popup.first_scene={}		
+page_popup.first_scene.color = {
+	{  232,   33, 0x000000},
+	{  509,   52, 0x000000},
+	{  890,   48, 0x000000},
+}
+page_popup.first_scene.logmsg="跳过开场动画"	
+
+
+page_main={}
+page_main.main_task_guide={}
+page_main.main_task_guide.color={
+	{  390,  247, 0xf5f6f6},
+	{  399,  249, 0xbcc007},
+	{  407,  247, 0xb1b607},
+	{  427,  245, 0xced205},
+}
+page_main.main_task_guide.click_xy={124,  244}
+page_main.main_task_guide.step="page_main.main_task_guide"
+page_main.main_task_guide.logmsg="第一次追踪主任务"
+
+page_main.main_task_completed={}
+page_main.main_task_completed.color={
+	{  112,  265, 0x07e804},
+	{  116,  268, 0x00ff00},
+	{  127,  266, 0x00ff00},
+	{   15,  224, 0x00ff00},
+	{   24,  229, 0x00ff00},
+}
+--page_main.main_task_completed.click_xy={124,  244}
+page_main.main_task_completed.step="page_main.main_task_completed"
+page_main.main_task_completed.logmsg="点击主线-完成"
+
+
+page_main.task_completed_guide={}
+page_main.task_completed_guide.color={
+	{  587,  450, 0xffffff},
+	{  602,  448, 0xffff00},
+	{  621,  446, 0xffff00},
+	{  642,  450, 0xffffff},
+}
+page_main.task_completed_guide.step="page_main.task_completed_guide"
+page_main.task_completed_guide.logmsg="第一次完成任务"
+page_main.task_completed_guide.click_xy={866,  454}
+
+page_main.task_completed={}
+page_main.task_completed.color={
+	{  822,  446, 0xa5b35e},
+	{  883,  454, 0xfff8d5},
+	{  838,  451, 0xfdf6d3},
+	{  854,  453, 0xfef7d3},
+	{  885,  450, 0x99a95b},
+}
+page_main.task_completed.step="page_main.task_completed"
+page_main.task_completed.logmsg="完成任务"
+
+
+
+page_main.accept_task={}
+page_main.accept_task.color={
+	{  831,  450, 0xfdf6d3},
+	{  836,  455, 0xfdf6d3},
+	{  854,  451, 0xfdf7d3},
+	{  893,  456, 0xfef7d3},
+	{  868,  445, 0xa7b55f},
+}
+page_main.accept_task.step="page_main.accept_task"
+page_main.accept_task.logmsg="接受任务"
+
+
+page_main.arti_fact_piece_guide={}
+page_main.arti_fact_piece_guide.color={
+	{   68,  151, 0xd2a960},
+	{   71,  190, 0xdfb673},
+	{  480,  372, 0xeeee01},
+	{  488,  372, 0xfafa00},
+}
+page_main.arti_fact_piece_guide.step="page_main.arti_fact_piece_guide"
+page_main.arti_fact_piece_guide.logmsg="领取神器碎片"
+page_main.arti_fact_piece_guide.click_xy={463,  500}
+
+
+page_main.arti_fact_preview_guide={}
+page_main.arti_fact_preview_guide.color={
+	{   62,  154, 0xd1a15d},
+	{  146,  397, 0xfcfcfc},
+	{  153,  397, 0xfefe00},
+	{  176,  397, 0xf5f501},
+}
+page_main.arti_fact_preview_guide.step="page_main.arti_fact_preview_guide"
+page_main.arti_fact_preview_guide.logmsg="预览神器"
+page_main.arti_fact_preview_guide.click_xy={167,  497}
+
+page_main.arti_fact_preview_close_guide={}
+page_main.arti_fact_preview_close_guide.color={
+	{  726,  177, 0xffff00},
+	{  708,  175, 0xfefefe},
+	{  737,  175, 0xf4f402},
+	{  765,  171, 0xf4f4f3},
+}
+page_main.arti_fact_preview_close_guide.step="page_main.arti_fact_preview_close_guide"
+page_main.arti_fact_preview_close_guide.logmsg="关闭预览神器界面"
+page_main.arti_fact_preview_close_guide.click_xy={934,  101}
+
+page_main.arti_fact_close_guide={}
+page_main.arti_fact_close_guide.color={
+	{  826,  176, 0xfdfdfd},
+	{  839,  174, 0xf4f401},
+	{  855,  175, 0xf2f201},
+	{  897,  167, 0xf7f7f7},
+}
+page_main.arti_fact_close_guide.step="page_main.arti_fact_close_guide"
+page_main.arti_fact_close_guide.logmsg="关闭神器预开启界面"
+page_main.arti_fact_close_guide.click_xy={1062,  110}
+
 
 --[[
 if multi_col({
