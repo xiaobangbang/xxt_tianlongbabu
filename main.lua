@@ -85,6 +85,13 @@ List.pushlast(list01,page_popup.close_window1)
 List.pushlast(list01,page_popup.use_money)
 List.pushlast(list01,page_popup.notice_ok1)
 List.pushlast(list01,page_popup.first_scene)
+List.pushlast(list01,page_popup.no_push_notice)
+List.pushlast(list01,page_popup.new_version_update)
+List.pushlast(list01,page_popup.put_on)
+List.pushlast(list01,page_popup.net_retry)
+
+List.pushlast(list01,page_popup.use)
+
 
 
 list02= List.new()
@@ -117,6 +124,34 @@ List.pushlast(list03,page_main.arti_fact_preview_close_guide)
 List.pushlast(list03,page_main.arti_fact_close_guide)
 List.pushlast(list03,page_main.main_task_completed)
 List.pushlast(list03,page_main.task_completed)
+List.pushlast(list03,page_main.picture_onemore)
+List.pushlast(list03,page_main.picture_move)
+List.pushlast(list03,page_main.menu_guide)
+List.pushlast(list03,page_main.skill_menu_guide)
+List.pushlast(list03,page_main.auto_fighting_guide)
+List.pushlast(list03,page_main.adopt_pet)
+List.pushlast(list03,page_main.choose_pet)
+List.pushlast(list03,page_main.pet_menu)
+List.pushlast(list03,page_main.big_skill)
+List.pushlast(list03,page_main.skill_upgrade_guide)
+List.pushlast(list03,page_main.skill_menu_close_guide)
+List.pushlast(list03,page_main.pet_menu_close_guide)
+List.pushlast(list03,page_main.pet_go_fighting_guide)
+List.pushlast(list03,page_main.main_task_chain)
+List.pushlast(list03,page_main.close_func_menu_guide)
+List.pushlast(list03,page_main.adopt_horse)
+List.pushlast(list03,page_main.black_horse_active)
+List.pushlast(list03,page_main.exam_activity)
+List.pushlast(list03,page_main.shop_buy_pos7)
+List.pushlast(list03,page_main.buy_ok)
+List.pushlast(list03,page_main.shenmifensha)
+List.pushlast(list03,page_main.submit_task_needed)
+List.pushlast(list03,page_main.letter_deal_button)
+--下面这行代码，放在最后
+List.pushlast(list03,page_popup.close_pop_window1)
+
+list04= List.new()
+List.pushlast(list04,page_main.backgroud)
 
 function dosomething2(v_color,v)
 	if v.click_xy ~= nil then
@@ -124,7 +159,7 @@ function dosomething2(v_color,v)
 		local click_x,click_y = getClickXY({v.click_xy})	
 		ltap(click_x,  click_y)
 		--nLog(v.step)
-		wwlog(v.logmsg)
+		--wwlog(v.logmsg)
 	else
 		if v.foo ~= nil then
 			v.foo()		
@@ -132,7 +167,7 @@ function dosomething2(v_color,v)
 			local click_x,click_y = getClickXY(v_color)	
 			ltap(click_x,  click_y)
 			--nLog(v.step)
-			wwlog(v.logmsg)
+			--wwlog(v.logmsg)
 		end	
 	end
 end
@@ -211,25 +246,12 @@ function task_by_order2(list1)
 	return ret
 end
 
-function  getListSize(list1)
-	-- body
-	--[[
-	local size =0
-	for k,v in pairs (list1) do		
-		if k ~= 'first' and k ~= 'last' then
-			size = size +1
-		end
-	end
-	return size
-	--]]
+function  getListSize(list1)	
 	return list1.last + 1
 end	
 
 function task_by_order(list1)
-	-- body	
-	--for i =1, getListSize(list1) do
-	--while (true) do
-	-- body
+	
 	if list1.first <= list1.last then
 		local first_value = List.getfirst(list1)		
 		local click_x,click_y = getClickXY(first_value)	
@@ -278,14 +300,14 @@ end
 
 local thread_kill = false
 --登录模块
-task1 = thread.dispatch( -- 派发一个异步任务
+task1 = thread.dispatch( 
 	function()
 		local ret_flag1 = true
 		local current_thread_id = thread.current_id()
-		table.insert(task_list,{id=current_thread_id,info="登录模块",SWITCH="ON"})
+		--table.insert(task_list,{id=current_thread_id,info="登录模块",SWITCH="ON"})
 		while(true) do 
 			--if (VAR_LIST1.LOGIN_SWITCH=="ON") then				
-			if getSwitchStatus(current_thread_id) =="ON" then
+			--if getSwitchStatus(current_thread_id) =="ON" then
 				nLog("261 登录模块:thread.current_id:"..tostring( current_thread_id))
 				--mmsleep(3000)				
 				local ret =task_by_loop2(list0)
@@ -299,24 +321,20 @@ task1 = thread.dispatch( -- 派发一个异步任务
 					VAR_LIST1.FIRST_ROLE="FINISHED"
 					VAR_LIST1.SECOND_ROLE="READY"
 					record_var1(VAR_LIST1)
-					---------------测试-------------------------end
-					--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
+					---------------测试-------------------------end					
 				end
-				
+								
 				if (ret =="in" or ret =="next_on") and thread_kill == false then
-					thread_kill=true					
-					--ttkill(current_thread_id)
-					--nLog('thread.kill before:'..tostring( current_thread_id))				
-				end		
+					thread_kill=true													
+				end					
 				
-			end
+			--end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
 
 nLog("task1:"..tostring(task1))
---table.insert(task_list,{id=task1,info="登录模块",LOGIN_SWITCH="ON"})
 
 --登录成功之后，进入游戏
 task2= thread.dispatch( -- 派发一个异步任务
@@ -375,6 +393,7 @@ task3 = thread.dispatch(
 				
 				if (ret =="in" or ret =="next_on") and thread_kill == false then
 					thread_kill=true
+					ttkill(current_thread_id)
 				end	
 			end
 			mrsleep(SLEEP_TIME)
@@ -383,6 +402,7 @@ task3 = thread.dispatch(
 )
 
 nLog("task3:"..tostring(task3))
+
 
 
 --处理弹窗，一般以小窗口为主
@@ -404,7 +424,10 @@ task0 = thread.dispatch(
 	function()
 		while(true) do 
 			thread_kill = false
-			nLog("249 backgroud monitor thread ")			
+			if f_no_color_changed() then
+				local ret = task_by_loop2(list04)
+			end 
+			nLog("411 backgroud monitor thread ")			
 			mmsleep(SLEEP_TIME)
 		end
 	end

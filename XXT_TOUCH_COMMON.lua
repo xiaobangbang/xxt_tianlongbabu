@@ -218,3 +218,31 @@ function mrsleep(ss)
 	mmsleep(ss+n1)
 end
 	
+function f_no_color_changed ()
+	local tab_luoxia ={
+	{ 1001,   32, 0xffffff},
+	{ 1001,   37, 0xffffff},
+	{ 1009,   33, 0xf6f7f7},
+	{ 1019,   31, 0xffffff},
+	{ 1035,   34, 0xffffff},
+	{ 1042,   33, 0xffffff},
+	{ 1052,   32, 0xffffff},
+	{ 1052,   38, 0xffffff},
+	{ 1023,   38, 0xcbcfd4},
+}
+
+	return function (v_over_time) 
+		local ret = true
+		local over_time = v_over_time or 1
+		over_time = over_time * 1000
+		mmsleep(over_time)
+		for k,v in  ipairs(tab_luoxia) do				
+			local c = getcolorr(v[1],   v[2])		
+			if c ~= v[3] then			
+				v[3] = c
+				ret = false
+			end
+		end
+		return ret
+	end
+end
