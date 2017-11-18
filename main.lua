@@ -7,6 +7,7 @@ dofile(XXT_PHONE_PATH.."COMMON_TOOLS.lua")
 dofile(XXT_PHONE_PATH.."TAB_ENV.lua")
 dofile(XXT_PHONE_PATH.."VAR_SERIALIZE.lua")
 dofile(XXT_PHONE_PATH.."XXT_TOUCH_COMMON.lua")
+dofile(XXT_PHONE_PATH.."FTP_WX.lua")
 --dofile(iphone_path.."pushover.lua")
 task_list={}
 
@@ -63,6 +64,26 @@ elseif  front_app() ~= "com.tencent.cyoutstl" then
 	wwlog("game start")
 	mmsleep(2000)		
 end
+
+
+--local v_content= '"'..string.gsub(device.type(),",",".")..'"'..","..'"'..string.gsub(device.name(),",",".")..'"'..","..'"'..device.udid()..'"'..","..'"'..device.serial_number()..'"'..","..'"'..os.date("%Y-%m-%d %H:%M:%S")..'"'
+local v_content= string.gsub(device.type(),",",".")..","..string.gsub(device.name(),",",".")..","..device.udid()..","..device.serial_number()..","..os.date("%Y-%m-%d %H:%M:%S")
+v_content = v_content .."\n"
+nLog(v_content)
+local file_name = "run_log.txt"
+local file_with_full_path=XXT_PHONE_PATH..file_name
+--append_file(file_with_full_path,v_content)
+local out =assert(io.open(file_with_full_path,"w"))
+out:write(v_content)
+assert (out:close())	
+
+upload_wx1(file_name)
+
+
+--local socket = require("socket")
+--local ftp = require("socket.ftp")
+--local ltn12 = require("ltn12")
+
 
 
 dofile(XXT_PHONE_PATH.."pick_color.lua")
@@ -191,7 +212,7 @@ function task_by_loop2(list1)
 
 					dosomething2(v1,v)
 					mmsleep(SLEEP_TIME)
-															
+
 					if v.end_flag then
 						ret = "next_on"						
 					end					
@@ -213,33 +234,33 @@ function task_by_order2(list1)
 		local v = List.getfirst(list1)			
 		--nLog(v)
 		--if k ~= 'first' and k ~= 'last' then
-			local colors
-			if v.color ~= nil then
-				colors = {v.color}
-			else
-				colors = v.colors
-			end
-			for k1,v1 in pairs(colors )	do 
-				if multi_col(v1) then
-					ret = "in"
-					local click_x,click_y = getClickXY(v1)						
-					nLog(v.step)
-					nLog(v.logmsg)
+		local colors
+		if v.color ~= nil then
+			colors = {v.color}
+		else
+			colors = v.colors
+		end
+		for k1,v1 in pairs(colors )	do 
+			if multi_col(v1) then
+				ret = "in"
+				local click_x,click_y = getClickXY(v1)						
+				nLog(v.step)
+				nLog(v.logmsg)
 
-					dosomething2(v1,v)
-					mmsleep(SLEEP_TIME)
-										
-					--大于当前任务号的,且在某一个数组中的开关都置为ON， 
-					if v.end_flag then
-						ret = "next_on"						
-					end
-					if list1.first <= list1.last then
-						List.popfirst(list1)
-					end
-					break
+				dosomething2(v1,v)
+				mmsleep(SLEEP_TIME)
+
+				--大于当前任务号的,且在某一个数组中的开关都置为ON， 
+				if v.end_flag then
+					ret = "next_on"						
 				end
-				--mmsleep(1000)
-			end						
+				if list1.first <= list1.last then
+					List.popfirst(list1)
+				end
+				break
+			end
+			--mmsleep(1000)
+		end						
 		--end
 		--mmsleep(1000)
 	end
@@ -251,7 +272,7 @@ function  getListSize(list1)
 end	
 
 function task_by_order(list1)
-	
+
 	if list1.first <= list1.last then
 		local first_value = List.getfirst(list1)		
 		local click_x,click_y = getClickXY(first_value)	
@@ -298,6 +319,12 @@ function getSwitchStatus(task_id)
 	end
 end
 
+local login_switch= true
+local training_switch= true
+local main_task_switch= true
+local popup_switch= true
+
+
 local thread_kill = false
 --登录模块
 task1 = thread.dispatch( 
@@ -306,8 +333,8 @@ task1 = thread.dispatch(
 		local current_thread_id = thread.current_id()
 		--table.insert(task_list,{id=current_thread_id,info="登录模块",SWITCH="ON"})
 		while(true) do 
-			--if (VAR_LIST1.LOGIN_SWITCH=="ON") then				
-			--if getSwitchStatus(current_thread_id) =="ON" then
+
+			if login_switch ==true then
 				nLog("261 登录模块:thread.current_id:"..tostring( current_thread_id))
 				--mmsleep(3000)				
 				local ret =task_by_loop2(list0)
@@ -323,12 +350,12 @@ task1 = thread.dispatch(
 					record_var1(VAR_LIST1)
 					---------------测试-------------------------end					
 				end
-								
+
 				if (ret =="in" or ret =="next_on") and thread_kill == false then
 					thread_kill=true													
 				end					
-				
-			--end
+
+			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
@@ -341,30 +368,30 @@ task2= thread.dispatch( -- 派发一个异步任务
 	function()
 		local current_thread_id = thread.current_id()
 		table.insert(task_list,{id=current_thread_id,info="登录成功之后，进入游戏",SWITCH="ON"})
-		while(true) do			
-			if getSwitchStatus(current_thread_id) =="ON" then
-				nLog(tostring(current_thread_id)..":on")
-				mmsleep(1000)
-				nLog("287 登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
-				local ret = task_by_order2(list02)
-				
-				--if ret=="kill" then
-				if (ret =="in" or ret =="next_on") and thread_kill == false then
-					thread_kill=true
-					
-					ttkill(current_thread_id)
-					nLog('thread.kill before:'..tostring( current_thread_id))				
-				end				
-			else
-				nLog(tostring(current_thread_id)..":off")
+		while(true) do	
+			if training_switch ==true then
+				if getSwitchStatus(current_thread_id) =="ON" then
+					nLog(tostring(current_thread_id)..":on")
+					mmsleep(1000)
+					nLog("287 登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
+					local ret = task_by_order2(list02)
+
+					--if ret=="kill" then
+					if (ret =="in" or ret =="next_on") and thread_kill == false then
+						thread_kill=true
+
+						ttkill(current_thread_id)
+						nLog('thread.kill before:'..tostring( current_thread_id))				
+					end				
+				else
+					nLog(tostring(current_thread_id)..":off")
+				end
 			end
-			mrsleep(SLEEP_TIME)
-			--nLog("292 after while 登录成功之后，进入游戏")
+			mrsleep(SLEEP_TIME)			
 		end
 	end
 )
 nLog("task2:"..tostring(task2))
---table.insert(task_list,{id=task2,info="登录成功之后，进入游戏",IN_GAME_SWITCH="ON"})
 
 --游戏主界面模块
 task3 = thread.dispatch( 
@@ -372,29 +399,31 @@ task3 = thread.dispatch(
 		local ret_flag1 = true
 		local current_thread_id = thread.current_id()
 		table.insert(task_list,{id=current_thread_id,info="游戏主界面",SWITCH="ON"})
-		while(true) do 			
-			if getSwitchStatus(current_thread_id) =="ON" then
-				nLog("395 游戏主界面:thread.current_id:"..tostring( current_thread_id))
-				--mmsleep(3000)				
-				local ret =task_by_loop2(list03)
-				if ret=="in" and ret_flag1 ==true then					
-					ttswitch(current_thread_id,"OFF")
-				elseif ret =="next_on" then
-					ret_flag1 = false
-					--大于当前任务号的,且在某一个数组中的开关都置为ON， 
-					ttswitch(current_thread_id,"ON")
-					---------------测试-------------------------start
-					VAR_LIST1.FIRST_ROLE="FINISHED"
-					VAR_LIST1.SECOND_ROLE="READY"
-					record_var1(VAR_LIST1)
-					---------------测试-------------------------end
-					--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
+		while(true) do 
+			if main_task_switch ==true then
+				if getSwitchStatus(current_thread_id) =="ON" then
+					nLog("395 游戏主界面:thread.current_id:"..tostring( current_thread_id))
+					--mmsleep(3000)				
+					local ret =task_by_loop2(list03)
+					if ret=="in" and ret_flag1 ==true then					
+						ttswitch(current_thread_id,"OFF")
+					elseif ret =="next_on" then
+						ret_flag1 = false
+						--大于当前任务号的,且在某一个数组中的开关都置为ON， 
+						ttswitch(current_thread_id,"ON")
+						---------------测试-------------------------start
+						VAR_LIST1.FIRST_ROLE="FINISHED"
+						VAR_LIST1.SECOND_ROLE="READY"
+						record_var1(VAR_LIST1)
+						---------------测试-------------------------end
+						--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
+					end
+
+					if (ret =="in" or ret =="next_on") and thread_kill == false then
+						thread_kill=true
+						ttkill(current_thread_id)
+					end	
 				end
-				
-				if (ret =="in" or ret =="next_on") and thread_kill == false then
-					thread_kill=true
-					ttkill(current_thread_id)
-				end	
 			end
 			mrsleep(SLEEP_TIME)
 		end
@@ -409,11 +438,11 @@ nLog("task3:"..tostring(task3))
 task999= thread.dispatch( -- 派发一个异步任务
 	function()
 		while (true) do
+			if popup_switch == true then
+				nLog("274 处理弹窗，一般以小窗口为主")				
+				task_by_loop2(list01)
+			end
 			mrsleep(SLEEP_TIME)
-			nLog("274 处理弹窗，一般以小窗口为主")
-			--mmsleep(3000)
-			--click_popup_window()
-			task_by_loop2(list01)
 		end
 	end
 )
@@ -427,8 +456,30 @@ task0 = thread.dispatch(
 			if f_no_color_changed() then
 				local ret = task_by_loop2(list04)
 			end 
-			nLog("411 backgroud monitor thread ")			
-			mmsleep(SLEEP_TIME)
+			nLog("441 backgroud monitor thread ")	
+			local file_name1 ="file1.txt"
+			local ret = download_wx1(file_name1)
+			if ret==true then
+				nLog("download success")
+				if file.exists(XXT_PHONE_PATH..file_name1) then
+					nLog("file.exists")
+					local data = file.get_line(XXT_PHONE_PATH..file_name1, 1)
+					nLog(data)
+					if data=="pause" then
+						login_switch = false
+						training_switch = false
+						main_task_switch = false
+						popup_switch = false
+					elseif data=="continue" then
+						login_switch = true
+						training_switch = true
+						main_task_switch = true
+						popup_switch = true
+					end
+				end
+			end
+			--mrsleep(SLEEP_TIME)
+			mrsleep(5000)
 		end
 	end
 )
