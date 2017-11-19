@@ -68,16 +68,15 @@ end
 
 --local v_content= '"'..string.gsub(device.type(),",",".")..'"'..","..'"'..string.gsub(device.name(),",",".")..'"'..","..'"'..device.udid()..'"'..","..'"'..device.serial_number()..'"'..","..'"'..os.date("%Y-%m-%d %H:%M:%S")..'"'
 local v_content= string.gsub(device.type(),",",".")..","..string.gsub(device.name(),",",".")..","..device.udid()..","..device.serial_number()..","..os.date("%Y-%m-%d %H:%M:%S")
-v_content = v_content .."\n"
+--v_content = v_content .."\n"
 nLog(v_content)
-local file_name = "run_log.txt"
-local file_with_full_path=XXT_PHONE_PATH..file_name
---append_file(file_with_full_path,v_content)
+local file_name = "run_log".."_"..string.gsub(string.gsub(os.date("%Y-%m-%d %H:%M:%S")," ","_"),":","").."_"..string.sub(device.udid(),33,40)..".txt"
+local file_with_full_path=XXT_PHONE_PATH..TAB_ENV.WX_USER.."/log/"..file_name
 local out =assert(io.open(file_with_full_path,"w"))
 out:write(v_content)
 assert (out:close())	
 
-upload_wx1(file_name)
+upload_wx1(TAB_ENV.WX_USER.."/log/"..file_name)
 
 
 --local socket = require("socket")
@@ -457,7 +456,7 @@ task0 = thread.dispatch(
 				local ret = task_by_loop2(list04)
 			end 
 			nLog("441 backgroud monitor thread ")	
-			local file_name1 ="file1.txt"
+			local file_name1 =TAB_ENV.WX_USER.."/switch_pause/file1.txt"
 			local ret = download_wx1(file_name1)
 			if ret==true then
 				nLog("download success")
