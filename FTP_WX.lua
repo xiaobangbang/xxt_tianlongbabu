@@ -42,12 +42,3 @@ function download_wx1(file_name)
 	end
 	return ret
 end
-
-function append_file(filename, content) 
-	local success = file.writes(filename, content)
-if success then
-    nLog("写入成功")
-else
-    nLog("写入失败")
-end
-end

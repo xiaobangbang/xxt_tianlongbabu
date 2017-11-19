@@ -70,15 +70,17 @@ end
 local v_content= string.gsub(device.type(),",",".")..","..string.gsub(device.name(),",",".")..","..device.udid()..","..device.serial_number()..","..os.date("%Y-%m-%d %H:%M:%S")
 --v_content = v_content .."\n"
 nLog(v_content)
-local file_name = "run_log".."_"..string.gsub(string.gsub(os.date("%Y-%m-%d %H:%M:%S")," ","_"),":","").."_"..string.sub(device.udid(),33,40)..".txt"
+function record_log(table_name,content) 
+local file_name = table_name.."-"..string.gsub(string.gsub(string.gsub(os.date("%Y-%m-%d %H:%M:%S")," ","_"),":",""),"-","").."-"..string.sub(device.udid(),33,40)..".txt"
 local file_with_full_path=XXT_PHONE_PATH..TAB_ENV.WX_USER.."/log/"..file_name
 local out =assert(io.open(file_with_full_path,"w"))
 out:write(v_content)
-assert (out:close())	
+assert (out:close())
 
 upload_wx1(TAB_ENV.WX_USER.."/log/"..file_name)
+end
 
-
+record_log("logon_device",v_content)
 --local socket = require("socket")
 --local ftp = require("socket.ftp")
 --local ltn12 = require("ltn12")
