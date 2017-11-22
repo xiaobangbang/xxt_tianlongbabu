@@ -18,6 +18,16 @@ function split(input, delimiter)
 	return arr
 end
 
+function string2time( timeString )  
+    local Y = string.sub(timeString , 1, 4)  
+    local M = string.sub(timeString , 6, 7)  
+    local D = string.sub(timeString , 9, 10)  
+	local HH = string.sub(timeString , 12, 13)  
+	local MI = string.sub(timeString , 15, 16)  
+	local SS = string.sub(timeString , 17, 18)  
+    return os.time({year=Y, month=M, day=D, hour=HH,min=MI,sec=SS})  
+end 
+
 function print_r ( t )
     local print_r_cache={}
     local function sub_print_r(t,indent)

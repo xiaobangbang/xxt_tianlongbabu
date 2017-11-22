@@ -864,3 +864,234 @@ page_main.letter_deal_button.color={
 	{  517,  346, 0xfdf6d3},
 }
 page_main.letter_deal_button.logmsg="擦拭信件"
+
+
+page_email={}
+page_email.email_icon={}
+page_email.email_icon.color={
+	{  334,  587, 0x6f5233},
+	{  334,  583, 0x72523d},
+	{  341,  611, 0x725136},
+	{  350,  601, 0x6f4e37},
+}
+page_email.email_icon.logmsg="主界面底部邮件图标"
+
+page_email.sys_email={}
+page_email.sys_email.colors={
+	{
+	{   72,  498, 0xb2aa8e},
+	{   83,  505, 0x2c1602},
+	{   81,  505, 0x2b1400},
+	{   84,  530, 0x301905},
+	{   76,  530, 0x301905},
+},
+	{
+	{   75,  204, 0xc1baa4},
+	{   89,  206, 0xbfb8a1},
+	{   80,  228, 0xbab29a},
+	{   91,  224, 0xb6ae92},
+}}
+page_email.sys_email.logmsg="点击邮件灯笼"
+
+page_email.receive_email={}
+page_email.receive_email.colors={
+	{
+	{  338,  573, 0xfef7d4},
+	{  370,  574, 0xfef6d3},
+	{  379,  566, 0xfef7d3},
+	{  395,  566, 0xfff8d5},
+},{
+	{   74,  233, 0xf7d361},
+	{   90,  233, 0xf9d663},
+	{  336,  573, 0xfef7d4},
+	{  396,  574, 0xfdf5d2},
+}}
+page_email.receive_email.logmsg="一键领取"
+page_email.receive_email.foo = function ()
+		ltap(396,  574) --click 一键领取
+		mrsleep(3000)
+		ltap(1081,   67) --click 关闭邮件窗口
+	end
+
+
+icon_welfare={}
+icon_welfare.welfare={}
+icon_welfare.welfare.colors={
+	{
+	{  776,   21, 0xd42714},
+	{  772,   20, 0xca0f03},
+	{  775,   14, 0xe2120c},
+	{  770,   18, 0xcd1609},
+},
+	{
+	{  744,   61, 0xe7ded0},
+	{  745,   63, 0xefdec1},
+	{  755,   65, 0xfbebc1},
+	{  761,   65, 0xfff7ce},
+},{
+	{  746,   68, 0xdfc48e},
+	{  747,   70, 0xe2c07a},
+	{  765,   69, 0xdebd84},
+	{  764,   64, 0xe4d6b5},
+}}
+icon_welfare.welfare.click_xy={755,   45}
+icon_welfare.welfare.logmsg="顶部福利图标"
+
+
+page_welfare={}
+page_welfare.welfare_yesterday={}
+page_welfare.welfare_yesterday.colors={
+	{
+	{  185,  481, 0x381e07},
+	{  185,  487, 0x381e07},
+	{  223,  480, 0x381e07},
+	{  238,  482, 0x381e07},
+},
+	{
+	{  185,  543, 0x381e07},
+	{  192,  544, 0x381e07},
+	{  223,  547, 0x381e07},
+	{  234,  548, 0x381e07},
+},{
+	{  185,  479, 0x391f08},
+	{  229,  479, 0x412710},
+	{  238,  486, 0x381e07},
+	{  192,  477, 0x3a2009},
+}}
+
+page_welfare.welfare_yesterday.logmsg="福利找回"
+
+page_welfare.complete_getback_show={}
+page_welfare.complete_getback_show.color={
+	{  927,  328, 0xfdf6d3},
+	{  937,  332, 0xfdf6d3},
+	{  957,  338, 0xfef6d3},
+	{  989,  335, 0xfff8d5},
+	{  962,  324, 0xf0cd73},
+}
+page_welfare.complete_getback_show.logmsg="出现完美找回，下拉到底部"
+page_welfare.complete_getback_show.foo = function()
+	
+	xxtmoveto(683,  432,685,  208,5)
+	mrsleep(3000)
+	xxtmoveto(683,  432,685,  208,5)
+	mrsleep(3000)
+	xxtmoveto(683,  432,685,  208,5)
+	end
+
+page_welfare.datu_show={}
+page_welfare.datu_show.colors={
+	{
+	{  339,  327, 0x3a2009},
+	{  356,  325, 0x391f08},
+	{  369,  325, 0x391f08},
+	{  385,  325, 0x391f08},
+	{  392,  325, 0x391f08},
+	{  595,  338, 0xc6b59a},
+	{  989,  350, 0xfff8d5},
+},
+{
+	{  852,  447, 0x167e00},
+	{  866,  442, 0x1e8208},
+	{  885,  438, 0x177d01},
+	{  912,  433, 0x157f02},
+	{ 1081,   67, 0xfffbb3},
+}}
+page_welfare.datu_show.logmsg="完美找回-逞凶打图,已找回的话，关闭窗口"
+
+
+page_welfare.datu_popup={}
+page_welfare.datu_popup.color={
+	{  554,  145, 0x68411f},
+	{  574,  144, 0x694220},
+	{  525,  144, 0x684220},
+	{  516,  141, 0x6a4422},
+	{  687,  533, 0xfff8d5},
+	{  691,  533, 0xfff8d5},
+}
+page_welfare.datu_popup.foo = function ()
+	ltap(691,  533)
+	mrsleep(3000)
+	ltap(1080,   65)
+	end
+page_welfare.datu_popup.logmsg="弹窗-完美找回-逞凶打图"
+
+page_bag={}
+page_bag.bag_icon={}
+page_bag.bag_icon.colors={
+	{
+	{  993,  350, 0xd2aa50},
+	{  995,  357, 0xcc943b},
+	{ 1005,  347, 0xad7137},
+	{ 1014,  358, 0xd57231},
+	{ 1011,  366, 0xf9f3e2},
+}}
+page_bag.bag_icon.logmsg="点击背包"
+
+page_bag.pack_bag={}
+page_bag.pack_bag.color={
+	{  668,  563, 0xf3d077},
+	{  812,  562, 0xf2d279},
+	{  929,  567, 0xf0c872},
+	{  966,  577, 0xfef7d4},
+}
+page_bag.pack_bag.foo = function()
+	ltap(966,  577) --点击整理
+	mrsleep(3000)
+	ltap(871,   92) --点击材料页签
+	end
+page_bag.pack_bag.logmsg="背包主界面，点击整理,然后点击材料"
+
+material_color = {
+	{  845,  100, 0xd49c5a},
+	{  866,   90, 0x68411f},
+	{  874,   90, 0x68411f},
+	{  885,   95, 0x694220},
+}
+page_bag.material1={}
+page_bag.material1.color=material_color
+page_bag.material1.logmsg="材料页签，开始从背包第一个材料逐个按顺序点击,暂时点击前两排1"
+page_bag.material1.click_xy={650,  159}
+
+page_bag.material2={}
+page_bag.material2.color=material_color
+page_bag.material2.logmsg="材料页签，开始从背包第一个材料逐个按顺序点击,暂时点击前两排2"
+page_bag.material2.click_xy={733,  160}
+
+page_bag.material3={}
+page_bag.material3.color=material_color
+page_bag.material3.logmsg="材料页签，开始从背包第一个材料逐个按顺序点击,暂时点击前两排3"
+page_bag.material3.click_xy={814,  160}
+
+page_bag.material4={}
+page_bag.material4.color=material_color
+page_bag.material4.logmsg="材料页签，开始从背包第一个材料逐个按顺序点击,暂时点击前两排4"
+page_bag.material4.click_xy={899,  163}
+
+page_bag.material5={}
+page_bag.material5.color=material_color
+page_bag.material5.logmsg="材料页签，开始从背包第一个材料逐个按顺序点击,暂时点击前两排5"
+page_bag.material5.click_xy={988,  162}
+
+page_xishi={}
+page_xishi.popup={}
+page_xishi.popup.colors={
+	{
+	{  157,  417, 0xf4f4f3},
+	{  168,  417, 0xfefefe},
+	{  185,  417, 0xffffff},
+	{  158,  467, 0xfefdfd},
+	{  178,  471, 0xffffff},
+	{  231,   94, 0xf49cfd},
+},
+	{
+	{  160,  413, 0xffffff},
+	{  159,  425, 0xffffff},
+	{  168,  419, 0xfefefe},
+	{  155,  467, 0xfefdfd},
+	{  175,  471, 0xfcfcfc},
+	{  195,  473, 0xffffff},
+	{  317,  340, 0xffff00},
+}}
+page_xishi.popup.logmsg="目标出世，宝图在手，啥也不愁"
+page_xishi.popup.click_xy={1081,   66}

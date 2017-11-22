@@ -65,7 +65,7 @@ elseif  front_app() ~= "com.tencent.cyoutstl" then
 	mmsleep(2000)		
 end
 
-
+local start_time=os.time()
 --local v_content= '"'..string.gsub(device.type(),",",".")..'"'..","..'"'..string.gsub(device.name(),",",".")..'"'..","..'"'..device.udid()..'"'..","..'"'..device.serial_number()..'"'..","..'"'..os.date("%Y-%m-%d %H:%M:%S")..'"'
 local v_content= string.gsub(device.type(),",",".")..","..string.gsub(device.name(),",",".")..","..device.udid()..","..device.serial_number()..","..os.date("%Y-%m-%d %H:%M:%S")
 --v_content = v_content .."\n"
@@ -171,6 +171,35 @@ List.pushlast(list03,page_main.submit_task_needed)
 List.pushlast(list03,page_main.letter_deal_button)
 --下面这行代码，放在最后
 List.pushlast(list03,page_popup.close_pop_window1)
+
+list05= List.new()
+List.pushlast(list05,page_email.email_icon)
+List.pushlast(list05,page_email.sys_email)
+List.pushlast(list05,page_email.receive_email)
+
+
+list06= List.new()
+List.pushlast(list06,icon_welfare.welfare)
+
+
+list07= List.new()
+List.pushlast(list07,page_welfare.welfare_yesterday)
+List.pushlast(list07,page_welfare.complete_getback_show)
+List.pushlast(list07,page_welfare.datu_show)
+List.pushlast(list07,page_welfare.datu_popup)
+
+
+list08= List.new()
+List.pushlast(list08,page_bag.bag_icon)
+List.pushlast(list08,page_bag.pack_bag)
+List.pushlast(list08,page_bag.material1)
+List.pushlast(list08,page_bag.material2)
+List.pushlast(list08,page_bag.material3)
+List.pushlast(list08,page_bag.material4)
+List.pushlast(list08,page_bag.material5)
+
+list09= List.new()
+List.pushlast(list09,page_xishi.popup)
 
 list04= List.new()
 List.pushlast(list04,page_main.backgroud)
@@ -324,8 +353,11 @@ local login_switch= true
 local training_switch= true
 local main_task_switch= true
 local popup_switch= true
-
-
+local email_switch= true
+local welfare_switch = true
+local datu_switch = true
+local bag_switch = true
+local xishi_switch = false
 local thread_kill = false
 --登录模块
 task1 = thread.dispatch( 
@@ -365,6 +397,7 @@ task1 = thread.dispatch(
 nLog("task1:"..tostring(task1))
 
 --登录成功之后，进入游戏
+---[[
 task2= thread.dispatch( -- 派发一个异步任务
 	function()
 		local current_thread_id = thread.current_id()
@@ -393,6 +426,7 @@ task2= thread.dispatch( -- 派发一个异步任务
 	end
 )
 nLog("task2:"..tostring(task2))
+--]]
 
 --游戏主界面模块
 task3 = thread.dispatch( 
@@ -401,7 +435,7 @@ task3 = thread.dispatch(
 		local current_thread_id = thread.current_id()
 		table.insert(task_list,{id=current_thread_id,info="游戏主界面",SWITCH="ON"})
 		while(true) do 
-			if main_task_switch ==true then
+			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
 				if getSwitchStatus(current_thread_id) =="ON" then
 					nLog("395 游戏主界面:thread.current_id:"..tostring( current_thread_id))
 					--mmsleep(3000)				
@@ -430,17 +464,102 @@ task3 = thread.dispatch(
 		end
 	end
 )
-
 nLog("task3:"..tostring(task3))
 
+--领取邮件
+welfare_switch = false
+task4= thread.dispatch(
+	function()
+		while (true) do
+			if email_switch == true then
+				nLog("441 领取邮件")				
+				local ret = task_by_order2(list05)
+				if (ret =="in" or ret =="next_on" )  then
+					welfare_switch = true
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+nLog("task4:"..tostring(task4))
 
+--打开福利图标
+task6= thread.dispatch(
+	function()
+		while (true) do
+			if welfare_switch == true then
+				nLog("474 打开福利图标")				
+				local ret = task_by_order2(list06)			
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+nLog("task6:"..tostring(task6))
+
+
+--找回- 逞凶打图副本
+bag_switch = false
+task7= thread.dispatch(
+	function()
+		while (true) do
+			if datu_switch == true then
+				nLog("488 找回- 逞凶打图副本")				
+				local ret = task_by_order2(list07)
+				if (ret =="in" or ret =="next_on" )  then
+					bag_switch = true
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+nLog("task7:"..tostring(task7))
+
+
+task8= thread.dispatch(
+	function()
+		while (true) do
+			if bag_switch == true then
+				nLog("521 打开背包")				
+				local ret = task_by_order2(list08)
+				if (ret =="in" or ret =="next_on" )  then
+					xishi_switch = true
+					bag_switch = false
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+nLog("task8:"..tostring(task8))
+
+
+task9= thread.dispatch(
+	function()
+		while (true) do
+			if xishi_switch == true then
+				nLog("539 找寻稀世藏宝图")				
+				local ret = task_by_order2(list09)	
+				bag_switch = true
+				xishi_switch = false
+				if (ret =="in" or ret =="next_on" )  then
+					dialog("宝图在手，啥也不愁")
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+nLog("task9:"..tostring(task9))
 
 --处理弹窗，一般以小窗口为主
-task999= thread.dispatch( -- 派发一个异步任务
+task999= thread.dispatch( 
 	function()
 		while (true) do
 			if popup_switch == true then
-				nLog("274 处理弹窗，一般以小窗口为主")				
+				nLog("456 处理弹窗，一般以小窗口为主")				
 				task_by_loop2(list01)
 			end
 			mrsleep(SLEEP_TIME)
@@ -450,37 +569,60 @@ task999= thread.dispatch( -- 派发一个异步任务
 nLog("task999:"..tostring(task999))
 --table.insert(task_list,{id=task999,info="处理弹窗，一般以小窗口为主"})
 
+--主线任务，静止不动的话，就点一下
+task888 = thread.dispatch( 
+	function()
+		while(true) do 			
+			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
+				nLog("477 主线任务，静止不动的话，就点一下")	
+				if f_no_color_changed() then
+					local ret = task_by_loop2(list04)
+				end 
+			end 
+			mrsleep(5000)
+		end 
+	end 
+) 
+nLog("task888:"..tostring(task888))
+
 task0 = thread.dispatch( 
 	function()
 		while(true) do 
-			thread_kill = false
-			if f_no_color_changed() then
-				local ret = task_by_loop2(list04)
-			end 
-			nLog("441 backgroud monitor thread ")	
+			thread_kill = false			
+			nLog("491 backgroud monitor thread ")	
 			local file_name1 =TAB_ENV.WX_USER.."/switch_pause/file1.txt"
 			local ret = download_wx1(file_name1)
 			if ret==true then
 				nLog("download success")
 				if file.exists(XXT_PHONE_PATH..file_name1) then
 					nLog("file.exists")
-					local data = file.get_line(XXT_PHONE_PATH..file_name1, 1)
+					local data = split(file.get_line(XXT_PHONE_PATH..file_name1, 1),",") 
 					nLog(data)
-					if data=="pause" then
+					local time2 = string2time(data[2])
+					
+					if data[1]=="pause" and time2 > start_time then
 						login_switch = false
 						training_switch = false
 						main_task_switch = false
 						popup_switch = false
-					elseif data=="continue" then
+						email_switch = false
+						welfare_switch = false
+						datu_switch = false
+						bag_switch = false
+					elseif data[1]=="continue" and time2>start_time then 
 						login_switch = true
 						training_switch = true
 						main_task_switch = true
 						popup_switch = true
+						email_switch = true
+						welfare_switch = true
+						datu_switch = true
+						bag_switch = true
 					end
 				end
 			end
 			--mrsleep(SLEEP_TIME)
-			mrsleep(5000)
+			mrsleep(10000)
 		end
 	end
 )
