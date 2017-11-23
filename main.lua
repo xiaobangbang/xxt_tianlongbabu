@@ -2,6 +2,7 @@
 SLEEP_TIME=1000
 --iphone_path="/var/mobile/Media/TouchSprite/lua/"
 XXT_PHONE_PATH="/var/mobile/Media/1ferver/lua/scripts/xxt_tianlongbabu/"
+log_file = XXT_PHONE_PATH.."tianlong.log"
 
 dofile(XXT_PHONE_PATH.."COMMON_TOOLS.lua")
 dofile(XXT_PHONE_PATH.."TAB_ENV.lua")
@@ -69,7 +70,7 @@ local start_time=os.time()
 --local v_content= '"'..string.gsub(device.type(),",",".")..'"'..","..'"'..string.gsub(device.name(),",",".")..'"'..","..'"'..device.udid()..'"'..","..'"'..device.serial_number()..'"'..","..'"'..os.date("%Y-%m-%d %H:%M:%S")..'"'
 local v_content= string.gsub(device.type(),",",".")..","..string.gsub(device.name(),",",".")..","..device.udid()..","..device.serial_number()..","..os.date("%Y-%m-%d %H:%M:%S")
 --v_content = v_content .."\n"
-nLog(v_content)
+wwlog(v_content)
 function record_log(table_name,content) 
 local file_name = table_name.."-"..string.gsub(string.gsub(string.gsub(os.date("%Y-%m-%d %H:%M:%S")," ","_"),":",""),"-","").."-"..string.sub(device.udid(),33,40)..".txt"
 local file_with_full_path=XXT_PHONE_PATH..TAB_ENV.WX_USER.."/log/"..file_name
@@ -104,16 +105,19 @@ List.pushlast(list01,page_login_entrance.player_name_exist)
 List.pushlast(list01,page_login_entrance.player_direct_game)
 List.pushlast(list01,page_login_entrance.net_lost_window)
 List.pushlast(list01,page_popup.close_window1)
-List.pushlast(list01,page_popup.use_money)
+--List.pushlast(list01,page_popup.use_money)
 List.pushlast(list01,page_popup.notice_ok1)
 List.pushlast(list01,page_popup.first_scene)
 List.pushlast(list01,page_popup.no_push_notice)
 List.pushlast(list01,page_popup.new_version_update)
-List.pushlast(list01,page_popup.put_on)
+--List.pushlast(list01,page_popup.put_on)
 List.pushlast(list01,page_popup.net_retry)
+--List.pushlast(list01,page_popup.use)
 
-List.pushlast(list01,page_popup.use)
-
+list777= List.new()
+List.pushlast(list777,page_popup.use_money)
+List.pushlast(list777,page_popup.put_on)
+List.pushlast(list777,page_popup.use)
 
 
 list02= List.new()
@@ -197,19 +201,28 @@ List.pushlast(list08,page_bag.material2)
 List.pushlast(list08,page_bag.material3)
 List.pushlast(list08,page_bag.material4)
 List.pushlast(list08,page_bag.material5)
+List.pushlast(list08,page_bag.close_bag)
 
 list09= List.new()
 List.pushlast(list09,page_xishi.popup)
+
+list10= List.new()
+List.pushlast(list10,page_next_charactor.func_menu)
+
+list11= List.new()
+List.pushlast(list11,page_next_charactor.setup)
+List.pushlast(list11,page_next_charactor.change_account)
+List.pushlast(list11,page_next_charactor.change_account_ok)
 
 list04= List.new()
 List.pushlast(list04,page_main.backgroud)
 
 function dosomething2(v_color,v)
 	if v.click_xy ~= nil then
-		--nLog(v.click_xy)
+		--wwlog(v.click_xy)
 		local click_x,click_y = getClickXY({v.click_xy})	
 		ltap(click_x,  click_y)
-		--nLog(v.step)
+		--wwlog(v.step)
 		--wwlog(v.logmsg)
 	else
 		if v.foo ~= nil then
@@ -217,7 +230,7 @@ function dosomething2(v_color,v)
 		else	
 			local click_x,click_y = getClickXY(v_color)	
 			ltap(click_x,  click_y)
-			--nLog(v.step)
+			--wwlog(v.step)
 			--wwlog(v.logmsg)
 		end	
 	end
@@ -237,8 +250,8 @@ function task_by_loop2(list1)
 				if multi_col(v1) then
 					ret = "in"
 					local click_x,click_y = getClickXY(v1)						
-					nLog(v.step)
-					nLog(v.logmsg)
+					wwlog(v.step)
+					wwlog(v.logmsg)
 
 					dosomething2(v1,v)
 					mmsleep(SLEEP_TIME)
@@ -262,7 +275,7 @@ function task_by_order2(list1)
 	--for k,v in pairs (list1) do
 	if list1.first <= list1.last then
 		local v = List.getfirst(list1)			
-		--nLog(v)
+		--wwlog(v)
 		--if k ~= 'first' and k ~= 'last' then
 		local colors
 		if v.color ~= nil then
@@ -274,8 +287,8 @@ function task_by_order2(list1)
 			if multi_col(v1) then
 				ret = "in"
 				local click_x,click_y = getClickXY(v1)						
-				nLog(v.step)
-				nLog(v.logmsg)
+				wwlog(v.step)
+				wwlog(v.logmsg)
 
 				dosomething2(v1,v)
 				mmsleep(SLEEP_TIME)
@@ -324,10 +337,10 @@ end
 
 function ttkill(task_id) 
 	for k,v in pairs(task_list) do
-		nLog(v.id)
+		wwlog(v.id)
 		if v.id < task_id then
 			thread.kill(v.id)
-			nLog("thread.kill(v.id)")
+			wwlog("thread.kill(v.id)")
 		end
 	end
 end
@@ -354,11 +367,18 @@ local training_switch= true
 local main_task_switch= true
 local popup_switch= true
 local email_switch= true
-local welfare_switch = true
+local welfare_switch = false
 local datu_switch = true
 local bag_switch = true
 local xishi_switch = false
+local next_charactor_switch = false
 local thread_kill = false
+local email_flag= false --领取邮件后设置为true，然后才允许打开背包
+local popup_flag =false
+local welfare_flag = false
+local time_count_flag= false
+local time_start1 = os.time()
+
 --登录模块
 task1 = thread.dispatch( 
 	function()
@@ -368,7 +388,7 @@ task1 = thread.dispatch(
 		while(true) do 
 
 			if login_switch ==true then
-				nLog("261 登录模块:thread.current_id:"..tostring( current_thread_id))
+				wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))
 				--mmsleep(3000)				
 				local ret =task_by_loop2(list0)
 				if ret=="in" and ret_flag1 ==true then					
@@ -383,49 +403,46 @@ task1 = thread.dispatch(
 					record_var1(VAR_LIST1)
 					---------------测试-------------------------end					
 				end
-
 				if (ret =="in" or ret =="next_on") and thread_kill == false then
 					thread_kill=true													
 				end					
-
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
 
-nLog("task1:"..tostring(task1))
+wwlog("task1:"..tostring(task1))
 
 --登录成功之后，进入游戏
 ---[[
-task2= thread.dispatch( -- 派发一个异步任务
+task2= thread.dispatch( 
 	function()
 		local current_thread_id = thread.current_id()
 		table.insert(task_list,{id=current_thread_id,info="登录成功之后，进入游戏",SWITCH="ON"})
 		while(true) do	
 			if training_switch ==true then
 				if getSwitchStatus(current_thread_id) =="ON" then
-					nLog(tostring(current_thread_id)..":on")
+					wwlog(tostring(current_thread_id)..":on")
 					mmsleep(1000)
-					nLog("287 登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
+					wwlog(debug.getinfo(1).currentline..":登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
 					local ret = task_by_order2(list02)
-
 					--if ret=="kill" then
 					if (ret =="in" or ret =="next_on") and thread_kill == false then
 						thread_kill=true
 
 						ttkill(current_thread_id)
-						nLog('thread.kill before:'..tostring( current_thread_id))				
+						wwlog(debug.getinfo(1).currentline..":thread.kill before:"..tostring( current_thread_id))				
 					end				
 				else
-					nLog(tostring(current_thread_id)..":off")
+					wwlog(tostring(current_thread_id)..":off")
 				end
 			end
-			mrsleep(SLEEP_TIME)			
+			mrsleep(SLEEP_TIME*2)			
 		end
 	end
 )
-nLog("task2:"..tostring(task2))
+wwlog("task2:"..tostring(task2))
 --]]
 
 --游戏主界面模块
@@ -437,8 +454,7 @@ task3 = thread.dispatch(
 		while(true) do 
 			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
 				if getSwitchStatus(current_thread_id) =="ON" then
-					nLog("395 游戏主界面:thread.current_id:"..tostring( current_thread_id))
-					--mmsleep(3000)				
+					wwlog(debug.getinfo(1).currentline..":游戏主界面:thread.current_id:"..tostring( current_thread_id))					
 					local ret =task_by_loop2(list03)
 					if ret=="in" and ret_flag1 ==true then					
 						ttswitch(current_thread_id,"OFF")
@@ -451,7 +467,7 @@ task3 = thread.dispatch(
 						VAR_LIST1.SECOND_ROLE="READY"
 						record_var1(VAR_LIST1)
 						---------------测试-------------------------end
-						--nLog('VAR_LIST1.IN_GAME_SWITCH="ON"')
+						--wwlog('VAR_LIST1.IN_GAME_SWITCH="ON"')
 					end
 
 					if (ret =="in" or ret =="next_on") and thread_kill == false then
@@ -464,39 +480,45 @@ task3 = thread.dispatch(
 		end
 	end
 )
-nLog("task3:"..tostring(task3))
+wwlog("task3:"..tostring(task3))
 
 --领取邮件
-welfare_switch = false
 task4= thread.dispatch(
 	function()
 		while (true) do
 			if email_switch == true then
-				nLog("441 领取邮件")				
+				wwlog(debug.getinfo(1).currentline..":领取邮件")				
 				local ret = task_by_order2(list05)
 				if (ret =="in" or ret =="next_on" )  then
 					welfare_switch = true
+					email_flag = true
+					time_count_flag= true
+					welfare_flag = false
 				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-nLog("task4:"..tostring(task4))
+wwlog("task4:"..tostring(task4))
 
 --打开福利图标
+mrsleep(3000)
 task6= thread.dispatch(
 	function()
 		while (true) do
 			if welfare_switch == true then
-				nLog("474 打开福利图标")				
-				local ret = task_by_order2(list06)			
+				wwlog(debug.getinfo(1).currentline..":打开福利图标")				
+				local ret = task_by_order2(list06)	
+				if ret == "in" then
+					welfare_flag = true					
+				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-nLog("task6:"..tostring(task6))
+wwlog("task6:"..tostring(task6))
 
 
 --找回- 逞凶打图副本
@@ -505,68 +527,119 @@ task7= thread.dispatch(
 	function()
 		while (true) do
 			if datu_switch == true then
-				nLog("488 找回- 逞凶打图副本")				
+				wwlog(debug.getinfo(1).currentline..":找回- 逞凶打图副本")				
 				local ret = task_by_order2(list07)
 				if (ret =="in" or ret =="next_on" )  then
 					bag_switch = true
+					popup_flag =false
+					--welfare_flag = true
 				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-nLog("task7:"..tostring(task7))
+wwlog("task7:"..tostring(task7))
 
 
 task8= thread.dispatch(
 	function()
 		while (true) do
-			if bag_switch == true then
-				nLog("521 打开背包")				
+			if bag_switch == true and email_flag == true and popup_flag ==true then
+				wwlog(debug.getinfo(1).currentline..":打开背包")				
 				local ret = task_by_order2(list08)
-				if (ret =="in" or ret =="next_on" )  then
+				if (ret =="in"  )  then
 					xishi_switch = true
 					bag_switch = false
+				end
+				if ( ret =="next_on" )  then
+					next_charactor_switch = true
 				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-nLog("task8:"..tostring(task8))
+wwlog("task8:"..tostring(task8))
 
 
 task9= thread.dispatch(
 	function()
 		while (true) do
 			if xishi_switch == true then
-				nLog("539 找寻稀世藏宝图")				
+				wwlog(debug.getinfo(1).currentline..":找寻稀世藏宝图")
 				local ret = task_by_order2(list09)	
 				bag_switch = true
 				xishi_switch = false
 				if (ret =="in" or ret =="next_on" )  then
-					dialog("宝图在手，啥也不愁")
+					--dialog("宝图在手，啥也不愁")
+					next_charactor_switch = true
 				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-nLog("task9:"..tostring(task9))
+wwlog("task9:"..tostring(task9))
 
---处理弹窗，一般以小窗口为主
-task999= thread.dispatch( 
+
+task10= thread.dispatch(
 	function()
 		while (true) do
-			if popup_switch == true then
-				nLog("456 处理弹窗，一般以小窗口为主")				
-				task_by_loop2(list01)
+			if next_charactor_switch == true then
+				wwlog(debug.getinfo(1).currentline..":准备更换账号，首先点击功能菜单")				
+				local ret = task_by_order2(list10)				
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-nLog("task999:"..tostring(task999))
+wwlog("task10:"..tostring(task10))
+
+
+task11= thread.dispatch(
+	function()
+		while (true) do
+			if next_charactor_switch == true then
+				wwlog(debug.getinfo(1).currentline..":准备更换账号，点击设置按钮")				
+				local ret = task_by_order2(list11)				
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+wwlog("task11:"..tostring(task11))
+
+--处理物品、装备弹窗，一般以小窗口为主
+task777= thread.dispatch( 
+	function()
+		while (true) do
+			if popup_switch == true and welfare_flag == true then --领取邮件之后，接着领取福利，然后在使用/领用奖励
+				wwlog(debug.getinfo(1).currentline..":处理物品、装备弹窗")				
+				local ret = task_by_loop2(list777)
+				if (ret =="in"  )  then					
+					popup_flag =true
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+wwlog("task777:"..tostring(task777))
+
+--处理异常弹窗，一般以小窗口为主
+task999= thread.dispatch( 
+	function()
+		while (true) do
+			if popup_switch == true then 
+				wwlog(debug.getinfo(1).currentline..":处理异常弹窗")				
+				local ret = task_by_loop2(list01)				
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+wwlog("task999:"..tostring(task999))
 --table.insert(task_list,{id=task999,info="处理弹窗，一般以小窗口为主"})
 
 --主线任务，静止不动的话，就点一下
@@ -574,7 +647,7 @@ task888 = thread.dispatch(
 	function()
 		while(true) do 			
 			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
-				nLog("477 主线任务，静止不动的话，就点一下")	
+				wwlog(debug.getinfo(1).currentline..":主线任务，静止不动的话，就点一下")	
 				if f_no_color_changed() then
 					local ret = task_by_loop2(list04)
 				end 
@@ -583,21 +656,35 @@ task888 = thread.dispatch(
 		end 
 	end 
 ) 
-nLog("task888:"..tostring(task888))
+wwlog("task888:"..tostring(task888))
 
 task0 = thread.dispatch( 
 	function()
 		while(true) do 
 			thread_kill = false			
-			nLog("491 backgroud monitor thread ")	
+			wwlog(debug.getinfo(1).currentline..":backgroud monitor thread ")	
+			--如果找不到稀世藏宝图，领取邮件3分钟之后，换下一个角色
+			if email_flag == true and time_count_flag== true then
+				time_count_flag = false
+				time_start1 = os.time()
+				nLog("计时开始:"..tostring( time_start1))
+			end
+			if email_flag == true then
+				if os.time() -time_start1 >TAB_ENV.CHANGE_TIME then	
+					next_charactor_switch = true
+					wwlog(debug.getinfo(1).currentline..":超过5分钟，则切换下一个角色")
+				else
+					nLog("当前时间:"..tostring( os.time()))
+				end
+			end
 			local file_name1 =TAB_ENV.WX_USER.."/switch_pause/file1.txt"
 			local ret = download_wx1(file_name1)
 			if ret==true then
-				nLog("download success")
+				wwlog("download success")
 				if file.exists(XXT_PHONE_PATH..file_name1) then
-					nLog("file.exists")
+					wwlog("file.exists")
 					local data = split(file.get_line(XXT_PHONE_PATH..file_name1, 1),",") 
-					nLog(data)
+					--wwlog(data)
 					local time2 = string2time(data[2])
 					
 					if data[1]=="pause" and time2 > start_time then
@@ -609,15 +696,17 @@ task0 = thread.dispatch(
 						welfare_switch = false
 						datu_switch = false
 						bag_switch = false
+						next_charactor_switch = false
 					elseif data[1]=="continue" and time2>start_time then 
 						login_switch = true
 						training_switch = true
 						main_task_switch = true
 						popup_switch = true
 						email_switch = true
-						welfare_switch = true
+						--welfare_switch = true
 						datu_switch = true
-						bag_switch = true
+						--bag_switch = true
+						--next_charactor_switch = true
 					end
 				end
 			end
@@ -626,9 +715,9 @@ task0 = thread.dispatch(
 		end
 	end
 )
-nLog("task0:"..tostring(task0))
+wwlog("task0:"..tostring(task0))
 
-nLog(task_list)
+wwlog(task_list)
 
 
 

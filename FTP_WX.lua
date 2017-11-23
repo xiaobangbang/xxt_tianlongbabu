@@ -32,11 +32,13 @@ function download_wx1(file_name)
 	local done, info = ftp.download("ftp://dabing6688:qkf3bj36r0yt@ftp.sinacloud.com/"..file_name, XXT_PHONE_PATH..file_name)
 	if (done) then   
 		ret = true
-        nLog(
+        --[[
+		nLog(
             "下载完成\n本次下载 "..info.size_download.." 字节"
             .."\n从第 "..info.start_pos.." 字节开始下载"
             .."\n平均速度为 "..math.floor(info.speed_download/1024).." kB/s"
-        )    
+        )   
+		--]]
 	else
 		nLog("连接失败："..info)
 	end

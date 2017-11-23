@@ -879,6 +879,12 @@ page_email.email_icon.logmsg="主界面底部邮件图标"
 page_email.sys_email={}
 page_email.sys_email.colors={
 	{
+	{   77,  295, 0x35200b},
+	{   84,  321, 0x2a1400},
+	{   76,  327, 0x311a06},
+	{   80,  329, 0xbdb59e},
+},
+	{
 	{   72,  498, 0xb2aa8e},
 	{   83,  505, 0x2c1602},
 	{   81,  505, 0x2b1400},
@@ -962,13 +968,19 @@ page_welfare.welfare_yesterday.colors={
 page_welfare.welfare_yesterday.logmsg="福利找回"
 
 page_welfare.complete_getback_show={}
-page_welfare.complete_getback_show.color={
+page_welfare.complete_getback_show.colors={
+	{
+	{  168,  475, 0xdead66},
+	{  185,  482, 0x694220},
+	{  211,  492, 0xdea05c},
+	{  227,  482, 0x68411f},
+},{
 	{  927,  328, 0xfdf6d3},
 	{  937,  332, 0xfdf6d3},
 	{  957,  338, 0xfef6d3},
 	{  989,  335, 0xfff8d5},
 	{  962,  324, 0xf0cd73},
-}
+}}
 page_welfare.complete_getback_show.logmsg="出现完美找回，下拉到底部"
 page_welfare.complete_getback_show.foo = function()
 	
@@ -996,19 +1008,32 @@ page_welfare.datu_show.colors={
 	{  885,  438, 0x177d01},
 	{  912,  433, 0x157f02},
 	{ 1081,   67, 0xfffbb3},
+},
+{
+	{  932,  448, 0xfff8d5},
+	{  934,  452, 0xfdf6d3},
+	{  958,  458, 0xfef6d3},
+	{  967,  453, 0xfef7d3},
+	{  996,  455, 0xfff8d5},
 }}
 page_welfare.datu_show.logmsg="完美找回-逞凶打图,已找回的话，关闭窗口"
 
 
 page_welfare.datu_popup={}
-page_welfare.datu_popup.color={
+page_welfare.datu_popup.colors={
+	{
+	{  554,  202, 0x9b8b78},
+	{  574,  204, 0x9a8b78},
+	{  669,  532, 0xfef7d3},
+	{  698,  533, 0xfff8d5},
+},{
 	{  554,  145, 0x68411f},
 	{  574,  144, 0x694220},
 	{  525,  144, 0x684220},
 	{  516,  141, 0x6a4422},
 	{  687,  533, 0xfff8d5},
 	{  691,  533, 0xfff8d5},
-}
+}}
 page_welfare.datu_popup.foo = function ()
 	ltap(691,  533)
 	mrsleep(3000)
@@ -1073,6 +1098,16 @@ page_bag.material5.color=material_color
 page_bag.material5.logmsg="材料页签，开始从背包第一个材料逐个按顺序点击,暂时点击前两排5"
 page_bag.material5.click_xy={988,  162}
 
+page_bag.close_bag={}
+page_bag.close_bag.color={
+	{  826,  562, 0xf2d179},
+	{  932,  567, 0xefc871},
+	{  671,  562, 0xf3d379},
+	{ 1081,   67, 0xfffbb3},
+}
+page_bag.close_bag.end_flag =  true
+page_bag.close_bag.logmsg="遍历背包完毕，关闭窗口"
+
 page_xishi={}
 page_xishi.popup={}
 page_xishi.popup.colors={
@@ -1095,3 +1130,45 @@ page_xishi.popup.colors={
 }}
 page_xishi.popup.logmsg="目标出世，宝图在手，啥也不愁"
 page_xishi.popup.click_xy={1081,   66}
+
+
+page_next_charactor={}
+page_next_charactor.setup={}
+page_next_charactor.setup.colors={
+{
+	{  868,  621, 0xe1bf71},
+	{  856,  620, 0xf1cf82},
+	{  872,  613, 0xf3e7cd},
+	{  869,  586, 0xffea8f},
+}}
+page_next_charactor.setup.logmsg="开始切换下一个角色，点击底部设置按钮"
+
+page_next_charactor.change_account={}
+page_next_charactor.change_account.color = {
+	{  809,  310, 0xfff8d5},
+	{  815,  313, 0xfff8d5},
+	{  833,  315, 0xfff8d5},
+	{  844,  314, 0xfff8d5},
+	{  860,  321, 0x758b4a},
+}
+page_next_charactor.change_account.logmsg="点击更换账号"
+
+page_next_charactor.change_account_ok={}
+page_next_charactor.change_account_ok.color = {
+	{  674,  418, 0xfef7d3},
+	{  680,  421, 0xfcf4d1},
+	{  697,  419, 0xfef7d4},
+	{  695,  428, 0xfff8d5},
+}
+page_next_charactor.change_account_ok.logmsg="确定更换账号"
+
+page_next_charactor.func_menu={}
+page_next_charactor.func_menu.colors={
+	{
+	{ 1088,  343, 0x6d4c31},
+	{ 1099,  343, 0x6f4e31},
+	{ 1088,  354, 0x6a4a33},
+	{ 1100,  355, 0x6f5035},
+}}
+page_next_charactor.func_menu.logmsg="开始切换下一个角色，点击功能菜单"
+

@@ -43,7 +43,7 @@ elseif TAB_ENV.LUA_VERSION == "XXT" then
 	keep_screen = screen.keep
 	unkeep_screen = screen.unkeep
 end
-
+--log_file = "tianlong.log"
 function f_keep_screen(flag)
 	if TAB_ENV.LUA_VERSION == "TOUCH" then 
 		if flag == true then
@@ -64,12 +64,14 @@ if TAB_ENV.LUA_VERSION == "TOUCH" then
 	init_log(log_file, 1)
 end	
 
-function wwlog(msg)
-	if TAB_ENV.LUA_VERSION == "TOUCH" then		
-		wt_log(log_file,msg)
-	elseif TAB_ENV.LUA_VERSION == "XXT" then
-		wx_log(msg)
-	end	
+function wwlog(msg)	
+	if TAB_ENV.LOG_MODE ==true then 
+		if TAB_ENV.LUA_VERSION == "TOUCH" then		
+			wt_log(log_file,msg)
+		elseif TAB_ENV.LUA_VERSION == "XXT" then
+			wx_log(msg)
+		end	
+	end
 	if TAB_ENV.DEBUG_MODE == true then
 		nLog(msg)
 	end
@@ -235,7 +237,7 @@ function f_no_color_changed ()
 		local ret = true
 		local over_time = v_over_time or 1
 		over_time = over_time * 1000
-		mmsleep(over_time)
+		mrsleep(over_time)
 		for k,v in  ipairs(tab_luoxia) do				
 			local c = getcolorr(v[1],   v[2])		
 			if c ~= v[3] then			
