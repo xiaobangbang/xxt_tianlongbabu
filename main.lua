@@ -82,11 +82,6 @@ upload_wx1(TAB_ENV.WX_USER.."/log/"..file_name)
 end
 
 record_log("logon_device",v_content)
---local socket = require("socket")
---local ftp = require("socket.ftp")
---local ltn12 = require("ltn12")
-
-
 
 dofile(XXT_PHONE_PATH.."pick_color.lua")
 
@@ -118,6 +113,7 @@ list777= List.new()
 List.pushlast(list777,page_popup.use_money)
 List.pushlast(list777,page_popup.put_on)
 List.pushlast(list777,page_popup.use)
+--List.pushlast(list777,page_popup.close_welfare_window)
 
 
 list02= List.new()
@@ -173,8 +169,10 @@ List.pushlast(list03,page_main.buy_ok)
 List.pushlast(list03,page_main.shenmifensha)
 List.pushlast(list03,page_main.submit_task_needed)
 List.pushlast(list03,page_main.letter_deal_button)
+List.pushlast(list03,page_main.clean_letter)
+List.pushlast(list03,page_training.skip_scene)
 --下面这行代码，放在最后
-List.pushlast(list03,page_popup.close_pop_window1)
+--List.pushlast(list03,page_popup.close_pop_window1)
 
 list05= List.new()
 List.pushlast(list05,page_email.email_icon)
@@ -187,10 +185,13 @@ List.pushlast(list06,icon_welfare.welfare)
 
 
 list07= List.new()
-List.pushlast(list07,page_welfare.welfare_yesterday)
-List.pushlast(list07,page_welfare.complete_getback_show)
-List.pushlast(list07,page_welfare.datu_show)
-List.pushlast(list07,page_welfare.datu_popup)
+List.pushlast(list07,page_welfare.welfare_find_back)
+List.pushlast(list07,page_welfare.scroll_bottom)
+
+list07_1= List.new()
+List.pushlast(list07_1,page_welfare.datu_show)
+List.pushlast(list07_1,page_welfare.datu_popup)
+List.pushlast(list07_1,page_welfare.find_back_close)
 
 
 list08= List.new()
@@ -291,8 +292,7 @@ function task_by_order2(list1)
 				wwlog(v.logmsg)
 
 				dosomething2(v1,v)
-				mmsleep(SLEEP_TIME)
-
+				mmsleep(SLEEP_TIME)				
 				--大于当前任务号的,且在某一个数组中的开关都置为ON， 
 				if v.end_flag then
 					ret = "next_on"						
@@ -368,6 +368,7 @@ local main_task_switch= true
 local popup_switch= true
 local email_switch= true
 local welfare_switch = false
+local find_back_switch = true
 local datu_switch = true
 local bag_switch = true
 local xishi_switch = false
@@ -379,6 +380,93 @@ local welfare_flag = false
 local time_count_flag= false
 local time_start1 = os.time()
 
+
+function check_popup()
+		while (true) do			
+				wwlog(debug.getinfo(1).currentline..":清理物品、装备弹窗")				
+				local ret = task_by_loop2(list777)
+				if (ret ==nil  )  then
+					wwlog("没有弹窗了，退出while")
+					break
+				end			
+			mrsleep(SLEEP_TIME)
+		end
+	end
+
+task0 = thread.dispatch( 
+	function()
+		while(true) do 
+			thread_kill = false			
+			wwlog(debug.getinfo(1).currentline..":backgroud monitor thread ")	
+			--如果找不到稀世藏宝图，领取邮件3分钟之后，换下一个角色
+			if email_flag == true and time_count_flag== true then
+				time_count_flag = false
+				time_start1 = os.time()
+				nLog("计时开始:"..tostring( time_start1))
+			end
+			if email_flag == true then
+				if os.time() -time_start1 >TAB_ENV.CHANGE_TIME then	
+					next_charactor_switch = true
+					wwlog(debug.getinfo(1).currentline..":超过5分钟，则切换下一个角色")
+				else
+					nLog("当前时间:"..tostring( os.time()))
+				end
+			end
+			local file_name1 =TAB_ENV.WX_USER.."/switch_pause/file1.txt"
+			local ret = download_wx1(file_name1)
+			if ret==true then
+				wwlog("download success")
+				if file.exists(XXT_PHONE_PATH..file_name1) then
+					wwlog("file.exists")
+					local data = split(file.get_line(XXT_PHONE_PATH..file_name1, 1),",") 
+					--wwlog(data)
+					local time2 = string2time(data[2])
+					
+					if data[1]=="pause" and time2 > start_time then
+						login_switch = false
+						training_switch = false
+						main_task_switch = false
+						popup_switch = false
+						email_switch = false
+						welfare_switch = false
+						find_back_switch = false
+						datu_switch = false
+						bag_switch = false
+						next_charactor_switch = false
+					elseif data[1]=="continue" and time2>start_time then 
+						login_switch = true
+						training_switch = true
+						main_task_switch = true
+						popup_switch = true
+						email_switch = true						
+						find_back_switch = true
+						datu_switch = true						
+					end
+				end
+			end
+			--mrsleep(SLEEP_TIME)
+			mrsleep(10000)
+		end
+	end
+)
+wwlog("task0:"..tostring(task0))
+
+
+--处理异常弹窗，一般以小窗口为主
+task999= thread.dispatch( 
+	function()
+		while (true) do
+			if popup_switch == true then 
+				wwlog(debug.getinfo(1).currentline..":处理异常弹窗")				
+				local ret = task_by_loop2(list01)				
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+)
+wwlog("task999:"..tostring(task999))
+
+
 --登录模块
 task1 = thread.dispatch( 
 	function()
@@ -386,7 +474,6 @@ task1 = thread.dispatch(
 		local current_thread_id = thread.current_id()
 		--table.insert(task_list,{id=current_thread_id,info="登录模块",SWITCH="ON"})
 		while(true) do 
-
 			if login_switch ==true then
 				wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))
 				--mmsleep(3000)				
@@ -430,7 +517,6 @@ task2= thread.dispatch(
 					--if ret=="kill" then
 					if (ret =="in" or ret =="next_on") and thread_kill == false then
 						thread_kill=true
-
 						ttkill(current_thread_id)
 						wwlog(debug.getinfo(1).currentline..":thread.kill before:"..tostring( current_thread_id))				
 					end				
@@ -482,30 +568,116 @@ task3 = thread.dispatch(
 )
 wwlog("task3:"..tostring(task3))
 
---领取邮件
-task4= thread.dispatch(
+
+--主线任务，静止不动的话，就点一下
+task888 = thread.dispatch( 
+	function()
+		while(true) do 			
+			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
+				wwlog(debug.getinfo(1).currentline..":主线任务，静止不动的话，就点一下")	
+				if f_no_color_changed() then
+					local ret = task_by_loop2(list04)
+				end 
+			end 
+			mrsleep(5000)
+		end 
+	end 
+) 
+wwlog("task888:"..tostring(task888))
+
+--处理物品、装备弹窗，一般以小窗口为主
+task777= thread.dispatch( 
 	function()
 		while (true) do
-			if email_switch == true then
-				wwlog(debug.getinfo(1).currentline..":领取邮件")				
-				local ret = task_by_order2(list05)
-				if (ret =="in" or ret =="next_on" )  then
-					welfare_switch = true
-					email_flag = true
-					time_count_flag= true
-					welfare_flag = false
-				end
+			if popup_switch == true  then --领取邮件之后，接着领取福利，然后在使用/领用奖励
+				wwlog(debug.getinfo(1).currentline..":处理物品、装备弹窗")				
+				local ret = task_by_loop2(list777)				
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
 )
-wwlog("task4:"..tostring(task4))
+wwlog("task777:"..tostring(task777))
 
---打开福利图标
-mrsleep(3000)
-task6= thread.dispatch(
+--找回
+func_find_back = function()
+		while (true) do
+			if find_back_switch == true then
+				wwlog(debug.getinfo(1).currentline..":找回")				
+				local ret = task_by_order2(list07)
+				if ( ret =="next_on" )  then
+					wwlog("找回，下拉到最底部，skip while" )
+					break					
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+func_datu = function()
+		while (true) do
+			if datu_switch == true then
+				wwlog(debug.getinfo(1).currentline..":逞凶打图")				
+				local ret = task_by_loop2(list07_1)
+				if ( ret =="next_on" )  then
+					wwlog("找回打图结束，skip while" )
+					break					
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+--bag_switch = false
+task7= thread.dispatch(
 	function()
+		func_find_back()
+		thread.timer_start(3,function() func_datu() end)		
+	end
+)
+wwlog("task7:"..tostring(task7))
+mrsleep(300)
+
+--[[
+task7_1= thread.dispatch(
+	function()
+		func_datu()
+	end
+)
+wwlog("task7_1:"..tostring(task7_1))
+--]]
+
+--领取邮件
+func_email = function  ()
+		while (true) do
+			if email_switch == true then
+				wwlog(debug.getinfo(1).currentline..":领取邮件")				
+				local ret = task_by_order2(list05)
+				if ret =="in"   then
+					welfare_switch = true
+					email_flag = true
+					time_count_flag= true
+					welfare_flag = false
+				 elseif  ret =="next_on"   then
+					wwlog("邮件线程关闭")					
+					--thread.timer_stop(task4)						
+					break
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+
+--领取邮件
+task4= thread.dispatch(
+	function()
+		func_email()
+		check_popup()
+	end
+)
+wwlog("task4:"..tostring(task4))
+mrsleep(500)
+thread.wait(task4)
+
+func_welfare_icon= function()
 		while (true) do
 			if welfare_switch == true then
 				wwlog(debug.getinfo(1).currentline..":打开福利图标")				
@@ -513,51 +685,48 @@ task6= thread.dispatch(
 				if ret == "in" then
 					welfare_flag = true					
 				end
+				if ret == "next_on" then
+					wwlog("退出while 循环")
+					break
+				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
+		wwlog("after while 循环")
+	end
+
+--打开福利图标
+task6= thread.dispatch(function()
+		func_welfare_icon()
+		wwlog("after func_welfare_icon()")
 	end
 )
 wwlog("task6:"..tostring(task6))
+thread.wait(task6)
+wwlog("福利图标点击完毕")
 
 
---找回- 逞凶打图副本
-bag_switch = false
-task7= thread.dispatch(
-	function()
+func_open_bag = function()
 		while (true) do
-			if datu_switch == true then
-				wwlog(debug.getinfo(1).currentline..":找回- 逞凶打图副本")				
-				local ret = task_by_order2(list07)
-				if (ret =="in" or ret =="next_on" )  then
-					bag_switch = true
-					popup_flag =false
-					--welfare_flag = true
+			if bag_switch == true  then
+				wwlog(debug.getinfo(1).currentline..":打开背包")				
+				local ret = task_by_order2(list08)
+				if ret =="in"  then
+					xishi_switch = true
+					bag_switch = false
+				elseif	ret =="next_on"   then
+					next_charactor_switch = true
+					break
 				end
 			end
 			mrsleep(SLEEP_TIME)
 		end
 	end
-)
-wwlog("task7:"..tostring(task7))
-
 
 task8= thread.dispatch(
 	function()
-		while (true) do
-			if bag_switch == true and email_flag == true and popup_flag ==true then
-				wwlog(debug.getinfo(1).currentline..":打开背包")				
-				local ret = task_by_order2(list08)
-				if (ret =="in"  )  then
-					xishi_switch = true
-					bag_switch = false
-				end
-				if ( ret =="next_on" )  then
-					next_charactor_switch = true
-				end
-			end
-			mrsleep(SLEEP_TIME)
-		end
+		check_popup()
+		func_open_bag()
 	end
 )
 wwlog("task8:"..tostring(task8))
@@ -596,7 +765,7 @@ task10= thread.dispatch(
 )
 wwlog("task10:"..tostring(task10))
 
-
+--准备更换账号，点击设置按钮
 task11= thread.dispatch(
 	function()
 		while (true) do
@@ -610,114 +779,6 @@ task11= thread.dispatch(
 )
 wwlog("task11:"..tostring(task11))
 
---处理物品、装备弹窗，一般以小窗口为主
-task777= thread.dispatch( 
-	function()
-		while (true) do
-			if popup_switch == true and welfare_flag == true then --领取邮件之后，接着领取福利，然后在使用/领用奖励
-				wwlog(debug.getinfo(1).currentline..":处理物品、装备弹窗")				
-				local ret = task_by_loop2(list777)
-				if (ret =="in"  )  then					
-					popup_flag =true
-				end
-			end
-			mrsleep(SLEEP_TIME)
-		end
-	end
-)
-wwlog("task777:"..tostring(task777))
 
---处理异常弹窗，一般以小窗口为主
-task999= thread.dispatch( 
-	function()
-		while (true) do
-			if popup_switch == true then 
-				wwlog(debug.getinfo(1).currentline..":处理异常弹窗")				
-				local ret = task_by_loop2(list01)				
-			end
-			mrsleep(SLEEP_TIME)
-		end
-	end
-)
-wwlog("task999:"..tostring(task999))
---table.insert(task_list,{id=task999,info="处理弹窗，一般以小窗口为主"})
-
---主线任务，静止不动的话，就点一下
-task888 = thread.dispatch( 
-	function()
-		while(true) do 			
-			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
-				wwlog(debug.getinfo(1).currentline..":主线任务，静止不动的话，就点一下")	
-				if f_no_color_changed() then
-					local ret = task_by_loop2(list04)
-				end 
-			end 
-			mrsleep(5000)
-		end 
-	end 
-) 
-wwlog("task888:"..tostring(task888))
-
-task0 = thread.dispatch( 
-	function()
-		while(true) do 
-			thread_kill = false			
-			wwlog(debug.getinfo(1).currentline..":backgroud monitor thread ")	
-			--如果找不到稀世藏宝图，领取邮件3分钟之后，换下一个角色
-			if email_flag == true and time_count_flag== true then
-				time_count_flag = false
-				time_start1 = os.time()
-				nLog("计时开始:"..tostring( time_start1))
-			end
-			if email_flag == true then
-				if os.time() -time_start1 >TAB_ENV.CHANGE_TIME then	
-					next_charactor_switch = true
-					wwlog(debug.getinfo(1).currentline..":超过5分钟，则切换下一个角色")
-				else
-					nLog("当前时间:"..tostring( os.time()))
-				end
-			end
-			local file_name1 =TAB_ENV.WX_USER.."/switch_pause/file1.txt"
-			local ret = download_wx1(file_name1)
-			if ret==true then
-				wwlog("download success")
-				if file.exists(XXT_PHONE_PATH..file_name1) then
-					wwlog("file.exists")
-					local data = split(file.get_line(XXT_PHONE_PATH..file_name1, 1),",") 
-					--wwlog(data)
-					local time2 = string2time(data[2])
-					
-					if data[1]=="pause" and time2 > start_time then
-						login_switch = false
-						training_switch = false
-						main_task_switch = false
-						popup_switch = false
-						email_switch = false
-						welfare_switch = false
-						datu_switch = false
-						bag_switch = false
-						next_charactor_switch = false
-					elseif data[1]=="continue" and time2>start_time then 
-						login_switch = true
-						training_switch = true
-						main_task_switch = true
-						popup_switch = true
-						email_switch = true
-						--welfare_switch = true
-						datu_switch = true
-						--bag_switch = true
-						--next_charactor_switch = true
-					end
-				end
-			end
-			--mrsleep(SLEEP_TIME)
-			mrsleep(10000)
-		end
-	end
-)
-wwlog("task0:"..tostring(task0))
 
 wwlog(task_list)
-
-
-

@@ -335,6 +335,15 @@ page_popup.close_window1.color = {
 }
 page_popup.close_window1.logmsg="活动窗口，点击关闭"
 
+page_popup.close_welfare_window={}
+page_popup.close_welfare_window.colors={
+{
+	{ 1078,   63, 0xfff7b5},
+	{ 1085,   62, 0xfef8b2},
+	{ 1078,   70, 0xfff7b1},
+	{ 1081,   67, 0xfffbb3},
+}}
+page_popup.close_welfare_window.logmsg="关闭福利窗口"
 
 
 page_popup.use_money={}		
@@ -865,6 +874,67 @@ page_main.letter_deal_button.color={
 }
 page_main.letter_deal_button.logmsg="擦拭信件"
 
+page_main.clean_letter={}
+page_main.clean_letter.color={
+	{  384,   43, 0xffffff},
+	{  397,   45, 0xfdfdfd},
+	{  413,   43, 0xffffff},
+	{  441,   37, 0xfbfbfb},
+	{  462,   40, 0xffffff},
+}
+page_main.clean_letter.logmsg="慢慢擦拭信件"
+page_main.clean_letter.foo= function()
+	mrsleep(1000)
+	--[[
+	xxtmoveto(849,  154,850,  487,10)
+	mrsleep(1000)
+	xxtmoveto(749,  152,745,  475,10)
+	mrsleep(1000)
+	xxtmoveto(655,  155,656,  478,10)
+	mrsleep(1000)
+	xxtmoveto(543,  148,546,  476,10)
+	mrsleep(1000)
+	xxtmoveto(404,  151,395,  481,10)
+	mrsleep(1000)
+	xxtmoveto(262,  166,257,  468,10)
+	--]]
+	--[[
+	{
+	{  180,  123, 0x937559},
+	{  930,  117, 0x92765a},
+	{  183,  181, 0xaf9276},
+	{  927,  173, 0x987e63},
+	{  181,  229, 0xa2896f},
+	{  938,  230, 0xa1896e},
+	{  178,  274, 0xb69b81},
+	{  940,  266, 0xa0876e},
+	{  178,  298, 0xb79d83},
+	{  940,  297, 0x8d775e},
+}
+{
+	{  183,  336, 0x6a6656},
+	{  939,  332, 0x8e785f},
+	{  181,  366, 0xb49d82},
+	{  940,  370, 0x826e57},
+	{  181,  403, 0xab9277},
+	{  931,  398, 0x937e67},
+	{  178,  417, 0xa48c70},
+	{  937,  418, 0x99806a},
+	{  179,  441, 0xaa9074},
+	{  930,  444, 0x987f68},
+}
+{
+	{  176,  468, 0xa78a6c},
+	{  937,  465, 0x937861},
+	{  177,  484, 0xaa8b6e},
+	{  934,  484, 0x977b62},
+	{  180,  508, 0xaa896b},
+	{  922,  505, 0x927a5f},
+}
+--]]
+	end
+
+
 
 page_email={}
 page_email.email_icon={}
@@ -913,6 +983,7 @@ page_email.receive_email.colors={
 	{  396,  574, 0xfdf5d2},
 }}
 page_email.receive_email.logmsg="一键领取"
+page_email.receive_email.end_flag = true
 page_email.receive_email.foo = function ()
 		ltap(396,  574) --click 一键领取
 		mrsleep(3000)
@@ -941,12 +1012,19 @@ icon_welfare.welfare.colors={
 	{  764,   64, 0xe4d6b5},
 }}
 icon_welfare.welfare.click_xy={755,   45}
+icon_welfare.welfare.end_flag = true
 icon_welfare.welfare.logmsg="顶部福利图标"
 
 
 page_welfare={}
-page_welfare.welfare_yesterday={}
-page_welfare.welfare_yesterday.colors={
+page_welfare.welfare_find_back={}
+page_welfare.welfare_find_back.colors={
+	{
+	{  185,  480, 0x391f08},
+	{  192,  478, 0x3a2009},
+	{  229,  475, 0x381e07},
+	{  234,  483, 0x381e07},
+},
 	{
 	{  185,  481, 0x381e07},
 	{  185,  487, 0x381e07},
@@ -964,26 +1042,33 @@ page_welfare.welfare_yesterday.colors={
 	{  238,  486, 0x381e07},
 	{  192,  477, 0x3a2009},
 }}
+--page_welfare.welfare_find_back.end_flag= true
+page_welfare.welfare_find_back.logmsg="福利找回"
 
-page_welfare.welfare_yesterday.logmsg="福利找回"
+page_welfare.no_resource={}
+page_welfare.no_resource.colors={
+	{
+	{  662,  185, 0x381e07},
+	{  670,  182, 0x381e07},
+	{  687,  182, 0x3a2009},
+	{  684,  187, 0x3b210a},
+	{ 1081,   67, 0xfffbb3},
+}}
+page_welfare.no_resource.logmsg="暂无资源可找回,点击关闭福利窗口"
+page_welfare.no_resource.end_flag= true
 
-page_welfare.complete_getback_show={}
-page_welfare.complete_getback_show.colors={
+
+page_welfare.scroll_bottom={}
+page_welfare.scroll_bottom.colors={
 	{
 	{  168,  475, 0xdead66},
 	{  185,  482, 0x694220},
 	{  211,  492, 0xdea05c},
 	{  227,  482, 0x68411f},
-},{
-	{  927,  328, 0xfdf6d3},
-	{  937,  332, 0xfdf6d3},
-	{  957,  338, 0xfef6d3},
-	{  989,  335, 0xfff8d5},
-	{  962,  324, 0xf0cd73},
 }}
-page_welfare.complete_getback_show.logmsg="出现完美找回，下拉到底部"
-page_welfare.complete_getback_show.foo = function()
-	
+page_welfare.scroll_bottom.logmsg="直接下拉到底部"
+page_welfare.scroll_bottom.end_flag= true
+page_welfare.scroll_bottom.foo = function()	
 	xxtmoveto(683,  432,685,  208,5)
 	mrsleep(3000)
 	xxtmoveto(683,  432,685,  208,5)
@@ -993,7 +1078,7 @@ page_welfare.complete_getback_show.foo = function()
 
 page_welfare.datu_show={}
 page_welfare.datu_show.colors={
-	{
+	{ -- 倒数第二行，逞凶打图完美找回
 	{  339,  327, 0x3a2009},
 	{  356,  325, 0x391f08},
 	{  369,  325, 0x391f08},
@@ -1002,21 +1087,27 @@ page_welfare.datu_show.colors={
 	{  595,  338, 0xc6b59a},
 	{  989,  350, 0xfff8d5},
 },
-{
-	{  852,  447, 0x167e00},
-	{  866,  442, 0x1e8208},
-	{  885,  438, 0x177d01},
-	{  912,  433, 0x157f02},
-	{ 1081,   67, 0xfffbb3},
-},
-{
+{--倒数第一行逞凶打图-完美找回
 	{  932,  448, 0xfff8d5},
 	{  934,  452, 0xfdf6d3},
 	{  958,  458, 0xfef6d3},
 	{  967,  453, 0xfef7d3},
 	{  996,  455, 0xfff8d5},
 }}
-page_welfare.datu_show.logmsg="完美找回-逞凶打图,已找回的话，关闭窗口"
+page_welfare.datu_show.logmsg="完美找回-逞凶打图"
+
+
+page_welfare.find_back_close={}
+page_welfare.find_back_close.colors={
+	{
+	{  185,  478, 0x68411f},
+	{  193,  479, 0x68411f},
+	{  230,  475, 0x68411f},
+	{ 1081,   66, 0xfffab4},
+	{ 1077,   62, 0xfff7b5},
+}}
+page_welfare.find_back_close.end_flag = true
+page_welfare.find_back_close.logmsg="已找回的话，关闭窗口"
 
 
 page_welfare.datu_popup={}
@@ -1035,11 +1126,12 @@ page_welfare.datu_popup.colors={
 	{  691,  533, 0xfff8d5},
 }}
 page_welfare.datu_popup.foo = function ()
-	ltap(691,  533)
+	ltap(691,  533) --点击找回按钮
 	mrsleep(3000)
-	ltap(1080,   65)
+	ltap(1080,   65) --关闭福利窗口
 	end
 page_welfare.datu_popup.logmsg="弹窗-完美找回-逞凶打图"
+page_welfare.datu_popup.end_flag = true
 
 page_bag={}
 page_bag.bag_icon={}

@@ -1,6 +1,6 @@
 
 function xxtmoveto(x1,y1,x2,y2,step)
-	touch.on(x1, y1):move(x2,y2):off() 
+	touch.on(x1, y1):move(x2,y2):delay(500):off() 
 end
 
 if TAB_ENV.LUA_VERSION == "TOUCH" then
