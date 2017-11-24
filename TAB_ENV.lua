@@ -2,9 +2,10 @@ TAB_ENV={
 	DEBUG_MODE =true,
 	LOG_MODE =true,
 	WX_USER="oR2LbwALAA43VxqMtW0dI1H71AqM",
-	MAIN_TASK_SWITCH= false,	
+	MAIN_TASK_SWITCH= true,	
 	LUA_VERSION="XXT", --TOUCH
 	SCRIPT_VERSION = "1.0.0",
+	--没有找到稀世，等待xx秒切换下一个角色
 	CHANGE_TIME=150,
 --选区
 	STUDIO_PARA_DAQU= 25,

@@ -44,11 +44,11 @@ function record_var1(o)
 
 end
 
-mmsleep(200)
+mrsleep(200)
 
 while (f_is_device_locked()) do
 	unlock_device()
-	mmsleep(1000)
+	mrsleep(500)
 end
 ttoast("屏幕已解锁，脚本开始")
 
@@ -60,10 +60,10 @@ end
 if front_app() == "com.tencent.xin" then
 	wwlog("74 微信程序ing...")
 elseif  front_app() ~= "com.tencent.cyoutstl" then
-	mmsleep(200)
+	mrsleep(200)
 	open_app("com.tencent.cyoutstl")
 	wwlog("game start")
-	mmsleep(2000)		
+	mrsleep(500)		
 end
 
 local start_time=os.time()
@@ -83,7 +83,7 @@ end
 
 record_log("logon_device",v_content)
 
-dofile(XXT_PHONE_PATH.."pick_color.lua")
+dofile(XXT_PHONE_PATH.."XXTColorPicking.lua")
 
 list0= List.new()
 List.pushlast(list0,page_login_entrance.button_wx)
@@ -98,7 +98,7 @@ List.pushlast(list0,page_login_entrance.player_enter_game)
 list01= List.new()
 List.pushlast(list01,page_login_entrance.player_name_exist)
 List.pushlast(list01,page_login_entrance.player_direct_game)
-List.pushlast(list01,page_login_entrance.net_lost_window)
+List.pushlast(list01,page_popup.net_lost_window)
 List.pushlast(list01,page_popup.close_window1)
 --List.pushlast(list01,page_popup.use_money)
 List.pushlast(list01,page_popup.notice_ok1)
@@ -113,7 +113,7 @@ list777= List.new()
 List.pushlast(list777,page_popup.use_money)
 List.pushlast(list777,page_popup.put_on)
 List.pushlast(list777,page_popup.use)
---List.pushlast(list777,page_popup.close_welfare_window)
+
 
 
 list02= List.new()
@@ -178,7 +178,7 @@ list05= List.new()
 List.pushlast(list05,page_email.email_icon)
 List.pushlast(list05,page_email.sys_email)
 List.pushlast(list05,page_email.receive_email)
-
+List.pushlast(list05,page_popup.close_welfare_window)
 
 list06= List.new()
 List.pushlast(list06,icon_welfare.welfare)
@@ -239,7 +239,7 @@ end
 
 function task_by_loop2(list1)
 	local ret = nil
-	for k,v in pairs (list1) do		
+	for k,v in pairs (list1) do	
 		if k ~= 'first' and k ~= 'last' then
 			local colors
 			if v.color ~= nil then
@@ -255,17 +255,18 @@ function task_by_loop2(list1)
 					wwlog(v.logmsg)
 
 					dosomething2(v1,v)
-					mmsleep(SLEEP_TIME)
+					mrsleep(SLEEP_TIME)
 
 					if v.end_flag then
 						ret = "next_on"						
 					end					
 					break
-				end
-				--mmsleep(1000)
-			end						
-		end
-		--mmsleep(1000)
+				end				
+			end	
+			if ret == "next_on" then
+				break
+			end
+		end		
 	end
 	return ret
 end
@@ -292,7 +293,7 @@ function task_by_order2(list1)
 				wwlog(v.logmsg)
 
 				dosomething2(v1,v)
-				mmsleep(SLEEP_TIME)				
+				mrsleep(SLEEP_TIME)				
 				--大于当前任务号的,且在某一个数组中的开关都置为ON， 
 				if v.end_flag then
 					ret = "next_on"						
@@ -301,11 +302,8 @@ function task_by_order2(list1)
 					List.popfirst(list1)
 				end
 				break
-			end
-			--mmsleep(1000)
-		end						
-		--end
-		--mmsleep(1000)
+			end			
+		end		
 	end
 	return ret
 end
@@ -313,27 +311,6 @@ end
 function  getListSize(list1)	
 	return list1.last + 1
 end	
-
-function task_by_order(list1)
-
-	if list1.first <= list1.last then
-		local first_value = List.getfirst(list1)		
-		local click_x,click_y = getClickXY(first_value)	
-		if multi_col(first_value) then				
-			if list1.first <= list1.last then
-				List.popfirst(list1)
-			end
-			ltap(click_x,  click_y)
-		end
-		mmsleep(1000)
-	end
-	if getListSize(list1) == 0 then
-		--break
-		print("break")
-	end
-	mmsleep(1000)
-	--end
-end
 
 function ttkill(task_id) 
 	for k,v in pairs(task_list) do
@@ -471,28 +448,30 @@ wwlog("task999:"..tostring(task999))
 task1 = thread.dispatch( 
 	function()
 		local ret_flag1 = true
-		local current_thread_id = thread.current_id()
-		--table.insert(task_list,{id=current_thread_id,info="登录模块",SWITCH="ON"})
+		local current_thread_id = thread.current_id()		
 		while(true) do 
 			if login_switch ==true then
-				wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))
-				--mmsleep(3000)				
+				wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))				
 				local ret =task_by_loop2(list0)
+				--[[
 				if ret=="in" and ret_flag1 ==true then					
 					ttswitch(current_thread_id,"OFF")
-				elseif ret =="next_on" then
-					ret_flag1 = false
+				elseif
+				--]]
+				if ret =="next_on" then
+					--ret_flag1 = false
 					--大于当前任务号的,且在某一个数组中的开关都置为ON， 
-					ttswitch(current_thread_id,"ON")
+					--ttswitch(current_thread_id,"ON")
 					---------------测试-------------------------start
-					VAR_LIST1.FIRST_ROLE="FINISHED"
-					VAR_LIST1.SECOND_ROLE="READY"
+					VAR_LIST1.FIRST_CHARACTOR="FINISHED"					
 					record_var1(VAR_LIST1)
 					---------------测试-------------------------end					
 				end
+				--[[
 				if (ret =="in" or ret =="next_on") and thread_kill == false then
 					thread_kill=true													
-				end					
+				end	
+				--]]
 			end
 			mrsleep(SLEEP_TIME)
 		end
@@ -509,20 +488,22 @@ task2= thread.dispatch(
 		table.insert(task_list,{id=current_thread_id,info="登录成功之后，进入游戏",SWITCH="ON"})
 		while(true) do	
 			if training_switch ==true then
-				if getSwitchStatus(current_thread_id) =="ON" then
+				--if getSwitchStatus(current_thread_id) =="ON" then
 					wwlog(tostring(current_thread_id)..":on")
-					mmsleep(1000)
+					mrsleep(1000)
 					wwlog(debug.getinfo(1).currentline..":登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
 					local ret = task_by_order2(list02)
 					--if ret=="kill" then
+					--[[
 					if (ret =="in" or ret =="next_on") and thread_kill == false then
 						thread_kill=true
 						ttkill(current_thread_id)
 						wwlog(debug.getinfo(1).currentline..":thread.kill before:"..tostring( current_thread_id))				
-					end				
-				else
-					wwlog(tostring(current_thread_id)..":off")
-				end
+					end	
+					--]]
+				--else
+				--	wwlog(tostring(current_thread_id)..":off")
+				--end
 			end
 			mrsleep(SLEEP_TIME*2)			
 		end
@@ -539,28 +520,27 @@ task3 = thread.dispatch(
 		table.insert(task_list,{id=current_thread_id,info="游戏主界面",SWITCH="ON"})
 		while(true) do 
 			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
-				if getSwitchStatus(current_thread_id) =="ON" then
+				--if getSwitchStatus(current_thread_id) =="ON" then
 					wwlog(debug.getinfo(1).currentline..":游戏主界面:thread.current_id:"..tostring( current_thread_id))					
 					local ret =task_by_loop2(list03)
-					if ret=="in" and ret_flag1 ==true then					
-						ttswitch(current_thread_id,"OFF")
-					elseif ret =="next_on" then
+					--if ret=="in" and ret_flag1 ==true then					
+						--ttswitch(current_thread_id,"OFF")
+					--elseif
+					if ret =="next_on" then
 						ret_flag1 = false
 						--大于当前任务号的,且在某一个数组中的开关都置为ON， 
-						ttswitch(current_thread_id,"ON")
-						---------------测试-------------------------start
-						VAR_LIST1.FIRST_ROLE="FINISHED"
-						VAR_LIST1.SECOND_ROLE="READY"
-						record_var1(VAR_LIST1)
+						--ttswitch(current_thread_id,"ON")
+						---------------测试-------------------------start						
 						---------------测试-------------------------end
 						--wwlog('VAR_LIST1.IN_GAME_SWITCH="ON"')
 					end
-
+					--[[
 					if (ret =="in" or ret =="next_on") and thread_kill == false then
 						thread_kill=true
 						ttkill(current_thread_id)
 					end	
-				end
+					--]]
+				--end
 			end
 			mrsleep(SLEEP_TIME)
 		end
@@ -599,6 +579,68 @@ task777= thread.dispatch(
 )
 wwlog("task777:"..tostring(task777))
 
+--领取邮件
+func_email = function  ()
+		while (true) do
+			if email_switch == true then
+				wwlog(debug.getinfo(1).currentline..":领取邮件")				
+				--local ret = task_by_order2(list05)
+				local ret = task_by_loop2(list05)
+				if ret =="in"   then
+					welfare_switch = true
+					email_flag = true
+					time_count_flag= true
+					welfare_flag = false
+				 elseif  ret =="next_on"   then
+					wwlog("邮件线程关闭")					
+					--thread.timer_stop(task4)						
+					break
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+	end
+
+--领取邮件
+task4= thread.dispatch(
+	function()
+		func_email()
+		check_popup()
+	end
+)
+wwlog("task4:"..tostring(task4))
+mrsleep(500)
+thread.wait(task4)
+
+func_welfare_icon= function()
+		while (true) do
+			if welfare_switch == true then
+				wwlog(debug.getinfo(1).currentline..":点击福利图标")				
+				local ret = task_by_order2(list06)	
+				if ret == "in" then
+					welfare_flag = true					
+				end
+				if ret == "next_on" then
+					wwlog("退出while 循环")
+					break
+				end
+			end
+			mrsleep(SLEEP_TIME)
+		end
+		wwlog("func_welfare_icon after while 循环")
+	end
+
+--点击福利图标
+task6= thread.dispatch(function()
+		func_welfare_icon()
+		wwlog("after func_welfare_icon()")
+	end
+)
+wwlog("task6:"..tostring(task6))
+thread.wait(task6)
+wwlog("福利图标点击完毕")
+
+
 --找回
 func_find_back = function()
 		while (true) do
@@ -636,76 +678,6 @@ task7= thread.dispatch(
 wwlog("task7:"..tostring(task7))
 mrsleep(300)
 
---[[
-task7_1= thread.dispatch(
-	function()
-		func_datu()
-	end
-)
-wwlog("task7_1:"..tostring(task7_1))
---]]
-
---领取邮件
-func_email = function  ()
-		while (true) do
-			if email_switch == true then
-				wwlog(debug.getinfo(1).currentline..":领取邮件")				
-				local ret = task_by_order2(list05)
-				if ret =="in"   then
-					welfare_switch = true
-					email_flag = true
-					time_count_flag= true
-					welfare_flag = false
-				 elseif  ret =="next_on"   then
-					wwlog("邮件线程关闭")					
-					--thread.timer_stop(task4)						
-					break
-				end
-			end
-			mrsleep(SLEEP_TIME)
-		end
-	end
-
---领取邮件
-task4= thread.dispatch(
-	function()
-		func_email()
-		check_popup()
-	end
-)
-wwlog("task4:"..tostring(task4))
-mrsleep(500)
-thread.wait(task4)
-
-func_welfare_icon= function()
-		while (true) do
-			if welfare_switch == true then
-				wwlog(debug.getinfo(1).currentline..":打开福利图标")				
-				local ret = task_by_order2(list06)	
-				if ret == "in" then
-					welfare_flag = true					
-				end
-				if ret == "next_on" then
-					wwlog("退出while 循环")
-					break
-				end
-			end
-			mrsleep(SLEEP_TIME)
-		end
-		wwlog("after while 循环")
-	end
-
---打开福利图标
-task6= thread.dispatch(function()
-		func_welfare_icon()
-		wwlog("after func_welfare_icon()")
-	end
-)
-wwlog("task6:"..tostring(task6))
-thread.wait(task6)
-wwlog("福利图标点击完毕")
-
-
 func_open_bag = function()
 		while (true) do
 			if bag_switch == true  then
@@ -723,6 +695,7 @@ func_open_bag = function()
 		end
 	end
 
+--打开背包，检测稀世
 task8= thread.dispatch(
 	function()
 		check_popup()
@@ -731,7 +704,7 @@ task8= thread.dispatch(
 )
 wwlog("task8:"..tostring(task8))
 
-
+--找寻稀世藏宝图
 task9= thread.dispatch(
 	function()
 		while (true) do
@@ -751,7 +724,7 @@ task9= thread.dispatch(
 )
 wwlog("task9:"..tostring(task9))
 
-
+--准备更换账号，首先点击功能菜单
 task10= thread.dispatch(
 	function()
 		while (true) do
@@ -779,6 +752,4 @@ task11= thread.dispatch(
 )
 wwlog("task11:"..tostring(task11))
 
-
-
-wwlog(task_list)
+--wwlog(task_list)
