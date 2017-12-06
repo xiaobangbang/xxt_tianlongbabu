@@ -1260,3 +1260,14 @@ page_next_charactor.func_menu.colors={
 }}
 page_next_charactor.func_menu.logmsg="开始切换下一个角色，点击功能菜单"
 
+
+page_clear={}
+page_clear.welfare_window={}
+page_clear.welfare_window.colors={
+	{
+	{  172,   89, 0xdeac65},
+	{  212,   96, 0xdea15b},
+	{  238,   92, 0x68411f},
+	{ 1080,   66, 0xfff9b3},
+}}
+page_clear.welfare_window.logmsg="在领取邮件之前，关闭福利弹窗"
