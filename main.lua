@@ -174,6 +174,9 @@ List.pushlast(list03,page_training.skip_scene)
 --下面这行代码，放在最后
 --List.pushlast(list03,page_popup.close_pop_window1)
 
+list04= List.new()
+List.pushlast(list04,page_main.backgroud)
+
 list05= List.new()
 List.pushlast(list05,page_email.email_icon)
 List.pushlast(list05,page_email.sys_email)
@@ -191,7 +194,7 @@ List.pushlast(list07,page_welfare.scroll_bottom)
 list07_1= List.new()
 List.pushlast(list07_1,page_welfare.datu_show)
 List.pushlast(list07_1,page_welfare.datu_popup)
-List.pushlast(list07_1,page_welfare.find_back_close)
+--List.pushlast(list07_1,page_welfare.find_back_close)
 
 
 list08= List.new()
@@ -219,8 +222,10 @@ List.pushlast(list11,page_next_charactor.change_account_ok)
 list12= List.new()
 List.pushlast(list12,page_clear.welfare_window)
 
-list04= List.new()
-List.pushlast(list04,page_main.backgroud)
+
+list13= List.new()
+List.pushlast(list13,page_close.all_big_window)
+
 
 function dosomething2(v_color,v)
 	if v.click_xy ~= nil then
@@ -255,19 +260,24 @@ function task_by_loop2(list1)
 				if multi_col(v1) then
 					ret = "in"
 					local click_x,click_y = getClickXY(v1)						
-					wwlog(v.step)
+					--wwlog(v.step)
 					wwlog(v.logmsg)
 
 					dosomething2(v1,v)
 					mrsleep(SLEEP_TIME)
 
-					if v.end_flag then
-						ret = "next_on"						
-					end					
+					if v.following_function then
+						ret = "following_function"						
+					end	
+
+					if v.end_color then
+						ret = "end_color"						
+					end	
+
 					break
 				end				
 			end	
-			if ret == "next_on" then
+			if ret == "end_color" then
 				break
 			end
 		end		
@@ -293,14 +303,14 @@ function task_by_order2(list1)
 			if multi_col(v1) then
 				ret = "in"
 				local click_x,click_y = getClickXY(v1)						
-				wwlog(v.step)
+				--wwlog(v.step)
 				wwlog(v.logmsg)
 
 				dosomething2(v1,v)
 				mrsleep(SLEEP_TIME)				
 				--大于当前任务号的,且在某一个数组中的开关都置为ON， 
-				if v.end_flag then
-					ret = "next_on"						
+				if v.end_color then
+					ret = "end_color"						
 				end
 				if list1.first <= list1.last then
 					List.popfirst(list1)
@@ -364,7 +374,7 @@ local time_start1 = os.time()
 
 function check_popup()
 	while (true) do			
-		wwlog(debug.getinfo(1).currentline..":清理物品、装备弹窗")				
+		wwlog(debug.getinfo(1).currentline..":清理物品、装备、弹窗")				
 		local ret = task_by_loop2(list777)
 		if (ret ==nil  )  then
 			wwlog("没有弹窗了，退出while")
@@ -374,6 +384,30 @@ function check_popup()
 	end
 end
 
+function close_all_window()
+	while (true) do			
+		wwlog(debug.getinfo(1).currentline..":关闭所有窗口，准备退出当前角色")				
+		local ret = task_by_loop2(list13)
+		if (ret ==nil  )  then
+			wwlog("没有窗口了")
+			break
+		end			
+		mrsleep(SLEEP_TIME)
+	end
+end
+
+func_monitor_popup=function()
+	while (true) do
+		if popup_switch == true  then --领取邮件之后，接着领取福利，然后在使用/领用奖励
+			--wwlog(debug.getinfo(1).currentline..":处理物品、装备、弹窗")				
+			local ret = task_by_loop2(list777)				
+		end
+		mrsleep(SLEEP_TIME)
+	end
+end
+
+local thread_409 = -409
+local thread_410 = -410
 --backgroud monitor thread
 task0 = thread.dispatch( 
 	function()
@@ -388,6 +422,7 @@ task0 = thread.dispatch(
 			end
 			if email_flag == true then
 				if os.time() -time_start1 >TAB_ENV.CHANGE_TIME then	
+					time_start1 = os.time()
 					next_charactor_switch = true
 					wwlog(debug.getinfo(1).currentline..":准备切换下一个角色")
 				else
@@ -397,9 +432,9 @@ task0 = thread.dispatch(
 			local file_name1 =TAB_ENV.WX_USER.."/switch_pause/file1.txt"
 			local ret = download_wx1(file_name1)
 			if ret==true then
-				wwlog("download success")
+				--wwlog("download success")
 				if file.exists(XXT_PHONE_PATH..file_name1) then
-					wwlog("file.exists")
+					--wwlog("file.exists")
 					local data = split(file.get_line(XXT_PHONE_PATH..file_name1, 1),",") 
 					--wwlog(data)
 					local time2 = string2time(data[2])
@@ -426,8 +461,20 @@ task0 = thread.dispatch(
 					end
 				end
 			end
+			if next_charactor_switch == true and thread_409 < 0 then
+				nLog("next_charactor_switch == true")
+				--next_charactor_switch = false
+				close_all_window()
+				thread_409 = thread.timer_start(1,function() 						
+						func_click_menu()
+					end)
+				mrsleep(500)
+				thread_410 = thread.timer_start(5,function() 						
+						func_click_setup()
+					end)
+			end
 			--mrsleep(SLEEP_TIME)
-			mrsleep(10000)
+			mrsleep(SLEEP_TIME * 3)
 		end
 	end
 )
@@ -439,7 +486,7 @@ task999= thread.dispatch(
 	function()
 		while (true) do
 			if popup_switch == true then 
-				wwlog(debug.getinfo(1).currentline..":处理异常弹窗")				
+				--wwlog(debug.getinfo(1).currentline..":处理异常弹窗")				
 				local ret = task_by_loop2(list01)				
 			end
 			mrsleep(SLEEP_TIME)
@@ -448,7 +495,22 @@ task999= thread.dispatch(
 )
 wwlog("task999:"..tostring(task999))
 
+func_training=function()
+	local current_thread_id = thread.current_id()
+	--table.insert(task_list,{id=current_thread_id,info="登录成功之后，进入游戏",SWITCH="ON"})
+	while(true) do	
+		if training_switch ==true then
+			wwlog(tostring(current_thread_id)..":on")
+			mrsleep(1000)
+			wwlog(debug.getinfo(1).currentline..":登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
+			local ret = task_by_order2(list02)					
+		end
+		mrsleep(SLEEP_TIME*2)			
+	end
+end
 
+
+local training_task = -100
 --登录模块
 task1 = thread.dispatch( 
 	function()
@@ -456,12 +518,14 @@ task1 = thread.dispatch(
 		local current_thread_id = thread.current_id()		
 		while(true) do 
 			if login_switch ==true then
-				wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))				
+				--wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))				
 				local ret =task_by_loop2(list0)				
-				if ret =="next_on" then					
+				if ret =="following_function" then					
+					nLog("新手训练任务开启")
+					training_task = thread.timer_start(5,function() func_training() end)
 					---------------测试-------------------------start
-					VAR_LIST1.FIRST_CHARACTOR="FINISHED"					
-					record_var1(VAR_LIST1)
+					--VAR_LIST1.FIRST_CHARACTOR="FINISHED"					
+					--record_var1(VAR_LIST1)
 					---------------测试-------------------------end					
 				end				
 			end
@@ -473,7 +537,7 @@ task1 = thread.dispatch(
 wwlog("task1:"..tostring(task1))
 
 --登录成功之后，进入游戏
----[[
+--[[
 task2= thread.dispatch( 
 	function()
 		local current_thread_id = thread.current_id()
@@ -497,12 +561,12 @@ task3 = thread.dispatch(
 	function()
 		local ret_flag1 = true
 		local current_thread_id = thread.current_id()
-		table.insert(task_list,{id=current_thread_id,info="游戏主界面",SWITCH="ON"})
+		--table.insert(task_list,{id=current_thread_id,info="游戏主界面",SWITCH="ON"})
 		while(true) do 
 			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then				
-				wwlog(debug.getinfo(1).currentline..":游戏主界面:thread.current_id:"..tostring( current_thread_id))					
+				--wwlog(debug.getinfo(1).currentline..":游戏主界面:thread.current_id:"..tostring( current_thread_id))					
 				local ret =task_by_loop2(list03)					
-				if ret =="next_on" then
+				if ret =="end_color" then
 					ret_flag1 = false						
 				end					
 			end
@@ -514,6 +578,7 @@ wwlog("task3:"..tostring(task3))
 
 
 --主线任务，静止不动的话，就点一下
+--[[
 task888 = thread.dispatch( 
 	function()
 		while(true) do 			
@@ -528,17 +593,12 @@ task888 = thread.dispatch(
 	end 
 ) 
 wwlog("task888:"..tostring(task888))
+--]]
 
 --处理物品、装备弹窗，一般以小窗口为主
 task777= thread.dispatch( 
 	function()
-		while (true) do
-			if popup_switch == true  then --领取邮件之后，接着领取福利，然后在使用/领用奖励
-				wwlog(debug.getinfo(1).currentline..":处理物品、装备弹窗")				
-				local ret = task_by_loop2(list777)				
-			end
-			mrsleep(SLEEP_TIME)
-		end
+		func_monitor_popup()
 	end
 )
 wwlog("task777:"..tostring(task777))
@@ -547,8 +607,8 @@ wwlog("task777:"..tostring(task777))
 task12= thread.dispatch( 
 	function()
 		while (true) do			
-				wwlog(debug.getinfo(1).currentline..":关闭弹窗，领取邮件作为第一个任务开始")				
-				local ret = task_by_loop2(list12)							
+			--wwlog(debug.getinfo(1).currentline..":关闭弹窗，领取邮件作为第一个任务开始")				
+			local ret = task_by_loop2(list12)							
 			mrsleep(SLEEP_TIME)
 		end
 	end
@@ -559,7 +619,7 @@ wwlog("task12:"..tostring(task12))
 func_email = function  ()
 	while (true) do
 		if email_switch == true then
-			wwlog(debug.getinfo(1).currentline..":领取邮件")				
+			--wwlog(debug.getinfo(1).currentline..":领取邮件")				
 			--local ret = task_by_order2(list05)
 			local ret = task_by_loop2(list05)
 			if ret =="in"   then
@@ -567,7 +627,7 @@ func_email = function  ()
 				email_flag = true
 				time_count_flag= true
 				welfare_flag = false
-			elseif  ret =="next_on"   then
+			elseif  ret =="end_color"   then
 				wwlog("邮件线程关闭")					
 				--thread.timer_stop(task4)						
 				break
@@ -590,15 +650,19 @@ thread.wait(task4)
 mrsleep(1000)
 thread.timer_stop(task12)
 
+if training_task > 0 then
+	thread.timer_stop(training_task)
+end
+
 func_welfare_icon= function()
 	while (true) do
 		if welfare_switch == true then
-			wwlog(debug.getinfo(1).currentline..":点击福利图标")				
+			--wwlog(debug.getinfo(1).currentline..":点击福利图标")				
 			local ret = task_by_order2(list06)	
 			if ret == "in" then
 				welfare_flag = true					
 			end
-			if ret == "next_on" then
+			if ret == "end_color" then
 				wwlog("退出while 循环")
 				break
 			end
@@ -623,9 +687,9 @@ wwlog("福利图标点击完毕")
 func_find_back = function()
 	while (true) do
 		if find_back_switch == true then
-			wwlog(debug.getinfo(1).currentline..":找回")				
+			--wwlog(debug.getinfo(1).currentline..":找回")				
 			local ret = task_by_order2(list07)
-			if ( ret =="next_on" )  then
+			if ( ret =="end_color" )  then
 				wwlog("找回，下拉到最底部，skip while" )
 				break					
 			end
@@ -636,9 +700,9 @@ end
 func_datu = function()
 	while (true) do
 		if datu_switch == true then
-			wwlog(debug.getinfo(1).currentline..":逞凶打图")				
+			--wwlog(debug.getinfo(1).currentline..":逞凶打图")				
 			local ret = task_by_loop2(list07_1)
-			if ( ret =="next_on" )  then
+			if ret =="end_color"   then
 				wwlog("找回打图结束，skip while" )
 				break					
 			end
@@ -659,12 +723,12 @@ mrsleep(300)
 func_open_bag = function()
 	while (true) do
 		if bag_switch == true  then
-			wwlog(debug.getinfo(1).currentline..":打开背包")				
+			--wwlog(debug.getinfo(1).currentline..":打开背包")				
 			local ret = task_by_order2(list08)
 			if ret =="in"  then
 				xishi_switch = true
 				bag_switch = false
-			elseif	ret =="next_on"   then
+			elseif	ret =="end_color"   then
 				next_charactor_switch = true
 				break
 			end
@@ -674,20 +738,20 @@ func_open_bag = function()
 end
 
 func_find_xishi =function()
-		while (true) do
-			if xishi_switch == true then
-				wwlog(debug.getinfo(1).currentline..":找寻稀世藏宝图")
-				local ret = task_by_order2(list09)	
-				bag_switch = true
-				xishi_switch = false
-				if (ret =="in" or ret =="next_on" )  then
-					--dialog("宝图在手，啥也不愁")
-					next_charactor_switch = true
-				end
+	while (true) do
+		if xishi_switch == true then
+			--wwlog(debug.getinfo(1).currentline..":找寻稀世藏宝图")
+			local ret = task_by_order2(list09)	
+			bag_switch = true
+			xishi_switch = false
+			if (ret =="in" or ret =="end_color" )  then
+				--dialog("宝图在手，啥也不愁")
+				next_charactor_switch = true
 			end
-			mrsleep(SLEEP_TIME)
 		end
+		mrsleep(SLEEP_TIME)
 	end
+end
 
 --打开背包，检测稀世
 task8= thread.dispatch(
@@ -707,39 +771,53 @@ task9= thread.dispatch(
 wwlog("task9:"..tostring(task9))
 
 func_click_menu =function()
-		while (true) do
-			if next_charactor_switch == true then
-				wwlog(debug.getinfo(1).currentline..":准备更换账号，首先点击功能菜单")				
-				local ret = task_by_order2(list10)				
-			end
-			mrsleep(SLEEP_TIME)
+	while (true) do
+		--if next_charactor_switch == true then
+		wwlog(debug.getinfo(1).currentline..":点击功能菜单")				
+		local ret = task_by_order2(list10)	
+		if  ret =="end_color"   then
+			wwlog("点击功能菜单 退出while")									
+			break
 		end
+		--end
+		mrsleep(SLEEP_TIME)
 	end
+end
 
 func_click_setup =function()
-		while (true) do
-			if next_charactor_switch == true then
-				wwlog(debug.getinfo(1).currentline..":准备更换账号，点击设置按钮")				
-				local ret = task_by_order2(list11)				
-			end
-			mrsleep(SLEEP_TIME)
+	while (true) do
+		--if next_charactor_switch == true then
+		wwlog(debug.getinfo(1).currentline..":点击设置按钮")				
+		local ret = task_by_order2(list11)	
+		if  ret =="end_color"   then
+			wwlog("点击设置按钮 退出while")									
+			break
 		end
+		--end
+		mrsleep(SLEEP_TIME)
 	end
+end
 
 --准备更换账号，首先点击功能菜单
+--[[
 task10= thread.dispatch(
 	function()
+		close_all_window()
 		func_click_menu()
 	end
 )
 wwlog("task10:"..tostring(task10))
+--]]
 
 --准备更换账号，点击设置按钮
+--[[
 task11= thread.dispatch(
 	function()
+		close_all_window()
 		func_click_setup()
 	end
 )
 wwlog("task11:"..tostring(task11))
+--]]
 
 --wwlog(task_list)

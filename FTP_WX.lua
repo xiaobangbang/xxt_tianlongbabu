@@ -14,11 +14,13 @@ function upload_wx1(file_name)
 				.."\n还有剩 "..(info.resource_size - (info.start_pos + info.size_upload)).." 字节"
 			)
 		else
+			--[[
 			nLog(
 				"上传完成\n本次上传 "..info.size_upload.." 字节"
 				.."\n从第 "..info.start_pos.." 字节开始上传"
 				.."\n平均速度为 "..math.floor(info.speed_upload/1024).." kB/s"
 			)
+			--]]
 			ret =  true
 		end
 	else

@@ -80,8 +80,7 @@ page_login_entrance.player_name_exist.color={
 	{  559,  421, 0xfcf5d1},
 	{  579,  419, 0xfef7d4},
 }
-
-page_login_entrance.player_name_exist.step="page_login_entrance.player_name_exist"
+page_login_entrance.player_name_exist.following_function=true
 page_login_entrance.player_name_exist.logmsg="角色名称重复"
 
 page_login_entrance.player_enter_game={}
@@ -99,7 +98,7 @@ page_login_entrance.player_enter_game.colors={{
 	{ 1064,  590, 0xdea15c},
 }}
 page_login_entrance.player_enter_game.logmsg="选定角色后点击进入游戏"
-page_login_entrance.player_enter_game.end_flag=true
+page_login_entrance.player_enter_game.end_color=true
 page_login_entrance.player_enter_game.foo= function()	
 	if VAR_LIST1.FIRST_CHARACTOR =="NEW" then
 		ltap(119,  168) --点击左侧第一个角色，没有则直接创建，走新手任务
@@ -224,7 +223,7 @@ page_training.fetch_artifact.color={
 
 page_training.fetch_artifact.step="page_training.fetch_artifact"
 page_training.fetch_artifact.logmsg="领取神器，对抗丁春秋"
-page_training.fetch_artifact.end_flag = true
+page_training.fetch_artifact.end_color = true
 page_training.fetch_artifact.foo=function() 
 	ltap( 561,  569)
 	mrsleep(3000)
@@ -364,12 +363,20 @@ page_popup.use_money.logmsg="使用铜钱"
 
 
 page_popup.use={}
-page_popup.use.color={
+page_popup.use.colors={
+	{
+	{  764,  448, 0xefc871},
+	{  776,  460, 0xfef7d3},
+	{  798,  449, 0xfef7d3},
+	{  810,  456, 0xfff8d5},
+}
+	,
+	{
 	{  776,  456, 0xfff8d5},
 	{  776,  463, 0xfff8d5},
 	{  796,  453, 0xfff8d5},
 	{  803,  458, 0xfff8d5},
-}
+}}
 page_popup.use_money.logmsg="使用"	
 
 
@@ -979,7 +986,7 @@ page_email.receive_email.colors={
 	{  396,  574, 0xfdf5d2},
 }}
 page_email.receive_email.logmsg="一键领取"
-page_email.receive_email.end_flag = true
+page_email.receive_email.end_color = true
 page_email.receive_email.foo = function ()
 		ltap(396,  574) --click 一键领取
 		mrsleep(3000)
@@ -1008,7 +1015,7 @@ icon_welfare.welfare.colors={
 	{  764,   64, 0xe4d6b5},
 }}
 icon_welfare.welfare.click_xy={755,   45}
-icon_welfare.welfare.end_flag = true
+icon_welfare.welfare.end_color = true
 icon_welfare.welfare.logmsg="顶部福利图标"
 
 
@@ -1038,7 +1045,7 @@ page_welfare.welfare_find_back.colors={
 	{  238,  486, 0x381e07},
 	{  192,  477, 0x3a2009},
 }}
---page_welfare.welfare_find_back.end_flag= true
+--page_welfare.welfare_find_back.end_color= true
 page_welfare.welfare_find_back.logmsg="福利找回"
 
 page_welfare.no_resource={}
@@ -1051,11 +1058,18 @@ page_welfare.no_resource.colors={
 	{ 1081,   67, 0xfffbb3},
 }}
 page_welfare.no_resource.logmsg="暂无资源可找回,点击关闭福利窗口"
-page_welfare.no_resource.end_flag= true
+page_welfare.no_resource.end_color= true
 
 
 page_welfare.scroll_bottom={}
 page_welfare.scroll_bottom.colors={
+	{
+	{  340,   99, 0x381e07},
+	{  350,   96, 0x3a2009},
+	{  362,  102, 0x381e07},
+	{  362,  106, 0x381e07},
+	{  375,   95, 0x391f08},
+},
 	{
 	{  168,  475, 0xdead66},
 	{  185,  482, 0x694220},
@@ -1063,7 +1077,7 @@ page_welfare.scroll_bottom.colors={
 	{  227,  482, 0x68411f},
 }}
 page_welfare.scroll_bottom.logmsg="直接下拉到底部"
-page_welfare.scroll_bottom.end_flag= true
+page_welfare.scroll_bottom.end_color= true
 page_welfare.scroll_bottom.foo = function()	
 	xxtmoveto(683,  432,685,  208,5)
 	mrsleep(3000)
@@ -1102,7 +1116,7 @@ page_welfare.find_back_close.colors={
 	{ 1081,   66, 0xfffab4},
 	{ 1077,   62, 0xfff7b5},
 }}
-page_welfare.find_back_close.end_flag = true
+page_welfare.find_back_close.end_color = true
 page_welfare.find_back_close.logmsg="已找回的话，关闭窗口"
 
 
@@ -1127,7 +1141,7 @@ page_welfare.datu_popup.foo = function ()
 	ltap(1080,   65) --关闭福利窗口
 	end
 page_welfare.datu_popup.logmsg="弹窗-完美找回-逞凶打图"
-page_welfare.datu_popup.end_flag = true
+page_welfare.datu_popup.end_color = true
 
 page_bag={}
 page_bag.bag_icon={}
@@ -1193,7 +1207,7 @@ page_bag.close_bag.color={
 	{  671,  562, 0xf3d379},
 	{ 1081,   67, 0xfffbb3},
 }
-page_bag.close_bag.end_flag =  true
+page_bag.close_bag.end_color =  true
 page_bag.close_bag.logmsg="遍历背包完毕，关闭窗口"
 
 page_xishi={}
@@ -1248,6 +1262,7 @@ page_next_charactor.change_account_ok.color = {
 	{  697,  419, 0xfef7d4},
 	{  695,  428, 0xfff8d5},
 }
+page_next_charactor.change_account_ok.end_color = true
 page_next_charactor.change_account_ok.logmsg="确定更换账号"
 
 page_next_charactor.func_menu={}
@@ -1258,6 +1273,7 @@ page_next_charactor.func_menu.colors={
 	{ 1088,  354, 0x6a4a33},
 	{ 1100,  355, 0x6f5035},
 }}
+page_next_charactor.func_menu.end_color = true
 page_next_charactor.func_menu.logmsg="开始切换下一个角色，点击功能菜单"
 
 
@@ -1269,5 +1285,22 @@ page_clear.welfare_window.colors={
 	{  212,   96, 0xdea15b},
 	{  238,   92, 0x68411f},
 	{ 1080,   66, 0xfff9b3},
+},{
+	{  273,   84, 0xdead66},
+	{  275,  104, 0xdea05b},
+	{  238,   89, 0x694220},
+	{ 1082,   64, 0xfff7b5},
 }}
 page_clear.welfare_window.logmsg="在领取邮件之前，关闭福利弹窗"
+
+
+page_close={}
+page_close.all_big_window={}
+page_close.all_big_window.colors = {
+{
+	{ 1076,   61, 0xfff5b3},
+	{ 1085,   62, 0xfef8b2},
+	{ 1080,   69, 0xfef7af},
+}
+}
+page_close.all_big_window.logmsg="关闭所有窗口"
