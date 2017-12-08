@@ -408,7 +408,6 @@ page_popup.new_version_update.color = {
 	{  678,  421, 0xfff8d5},
 }
 
---{{  595,  560, 0xe5a32d},{  670,  584, 0xe39722},{  621,  576, 0xfefefe},{  652,  572, 0xffffff},}
 page_popup.new_version_update.logmsg="版本更新"
 
 page_popup.put_on={}		

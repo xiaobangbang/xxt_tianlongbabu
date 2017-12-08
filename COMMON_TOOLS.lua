@@ -191,3 +191,34 @@ function getRandomNum(n1)
 	local var1 = math.random(1,n2) 		
 	return var1
 end
+
+function record_var1(o,file)
+	local out =assert(io.open(file,"w"))
+	out:write("VAR_LIST1 = ")
+	f_abc = function(o)
+		if type(o) == "number" then
+			out:write(o)
+		elseif type(o) == "string" then
+			out:write(string.format("%q",o) )		
+		elseif type(o) == "boolean" then
+			if o ==true then
+				out:write( "true")
+			else
+				out:write( "false")
+			end
+		elseif type(o) == "table" then		
+			out:write("{\n")
+			for k,v in pairs(o) do
+				out:write(" ",k,"=")
+				f_abc(v)
+				out:write(",\n")
+			end
+			out:write("}\n")
+		else
+			error("cannot serialize a "..type(o))
+		end
+	end
+
+	f_abc(o)
+	assert (out:close())
+end

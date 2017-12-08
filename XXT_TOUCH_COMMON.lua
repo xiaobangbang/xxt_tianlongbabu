@@ -1,6 +1,6 @@
 
 function xxtmoveto(x1,y1,x2,y2,step)
-	touch.on(x1, y1):move(x2,y2):delay(500):off() 
+	touch.on(x1, y1):delay(500):move(x2,y2):delay(500):off() 
 end
 
 if TAB_ENV.LUA_VERSION == "TOUCH" then
@@ -100,38 +100,6 @@ function shake_screen()
 	end
 	set_screen_light(br)
 end
-
-
-function f_no_color_changed ()
-	local tab_luoxia ={
-		{ 1071,   50, 0xf0e9e9},
-		{ 1072,   58, 0xeae3e3},
-		{ 1079,   49, 0xdccaca},
-		{ 1080,   54, 0xefe7e7},
-		{ 1087,   54, 0xf5f0f0},
-		{ 1093,   59, 0xebe8e6},
-		{ 1100,   54, 0xf1ecec},
-		{ 1108,   59, 0xf3f2f1},
-		{ 1110,   52, 0xdcd2d2},
-		{ 1117,   53, 0xeceae9},
-	}
-
-	return function (v_over_time) 
-		local ret = true
-		local over_time = v_over_time or 1
-		over_time = over_time * 1000
-		mmsleep(over_time)
-		for k,v in  ipairs(tab_luoxia) do				
-			local c = getcolorr(v[1],   v[2])		
-			if c ~= v[3] then			
-				v[3] = c
-				ret = false
-			end
-		end
-		return ret
-	end
-end
-
 
 local tab_line = {
 	{  329,  202, 0x68351b},
