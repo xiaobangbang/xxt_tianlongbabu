@@ -154,13 +154,14 @@ page_training.in_game_training.colors={
 	{  112,   44, 0xcd3233},
 	{  102,   55, 0x18a8af},
 }}
-page_training.in_game_training.step="page_training.in_game_training"
+--page_training.in_game_training.step="page_training.in_game_training"
 page_training.in_game_training.logmsg="角色进入游戏，开场训练,移动到第一个光圈"
 page_training.in_game_training.foo= function () 
 	--xxtmoveto(145,  551,190,  326,5)
 	touch.tap(148,  489,2000)	
 	nLog("foo 函数开场训练 ")
 	end
+page_training.in_game_training.foo2 = function() return "training" end
 
 page_training.skip_scene={}
 page_training.skip_scene.colors={{
@@ -313,14 +314,6 @@ page_popup.close_window1.logmsg="活动窗口，点击关闭"
 
 page_popup.close_welfare_window={}
 page_popup.close_welfare_window.colors={
---[[
-{
-	{ 1078,   63, 0xfff7b5},
-	{ 1085,   62, 0xfef8b2},
-	{ 1078,   70, 0xfff7b1},
-	{ 1081,   67, 0xfffbb3},
-}
---]]
 {
 	{  169,  104, 0xdea05c},
 	{  261,  104, 0xde9f5c},
@@ -328,6 +321,7 @@ page_popup.close_welfare_window.colors={
 	{ 1081,   66, 0xfffab4},
 }
 }
+page_popup.close_welfare_window.end_color = true
 page_popup.close_welfare_window.logmsg="关闭福利窗口"
 
 
@@ -654,7 +648,7 @@ page_main.picture_move.color={
 page_main.picture_move.logmsg="画像，拼接完整"
 page_main.picture_move.foo = function()
 	mrsleep(2000)
-	xxtmoveto(215,  184,572,  185,1)
+	xxtmoveto(215,  184,552,  185,1)
 	mrsleep(2000)
 	xxtmoveto( 218,  440,520,  462,1)
 	mrsleep(2000)
@@ -1022,6 +1016,12 @@ page_welfare={}
 page_welfare.welfare_find_back={}
 page_welfare.welfare_find_back.colors={
 	{
+	{  175,  477, 0xc9b899},
+	{  185,  482, 0x381e07},
+	{  289,  464, 0xcc1206},
+	{  227,  483, 0x381e07},
+},
+	{
 	{  185,  480, 0x391f08},
 	{  192,  478, 0x3a2009},
 	{  229,  475, 0x381e07},
@@ -1044,7 +1044,6 @@ page_welfare.welfare_find_back.colors={
 	{  238,  486, 0x381e07},
 	{  192,  477, 0x3a2009},
 }}
---page_welfare.welfare_find_back.end_color= true
 page_welfare.welfare_find_back.logmsg="福利找回"
 
 page_welfare.no_resource={}
@@ -1290,6 +1289,7 @@ page_clear.welfare_window.colors={
 	{  238,   89, 0x694220},
 	{ 1082,   64, 0xfff7b5},
 }}
+page_clear.welfare_window.foo2 = function() return "welfare_window" end
 page_clear.welfare_window.logmsg="在领取邮件之前，关闭福利弹窗"
 
 
@@ -1303,3 +1303,19 @@ page_close.all_big_window.colors = {
 }
 }
 page_close.all_big_window.logmsg="关闭所有窗口"
+
+page_main_task={}
+page_main_task.task_button={}
+page_main_task.task_button.colors={
+	{
+	{   32,  187, 0x68411f},
+	{   41,  188, 0x68411f},
+	{   59,  181, 0x704924},
+	{   59,  191, 0x68411f},
+}
+}
+page_main_task.task_button.logmsg="进入游戏主界面"
+page_main_task.task_button.foo2=function() 
+	--nLog("进入游戏主界面")
+	return "player_in"
+end
