@@ -22,6 +22,8 @@ local email_switch= true
 local welfare_switch = true
 local find_back_switch = true
 local datu_switch = true
+
+
 local bag_switch = true
 local xishi_switch = false
 local next_charactor_switch = false
@@ -41,6 +43,7 @@ local task12  = 0 - debug.getinfo(1).currentline
 local task3 = 0 - debug.getinfo(1).currentline
 local task4 = 0 - debug.getinfo(1).currentline
 local task777 = 0 - debug.getinfo(1).currentline
+local task14 = 0 - debug.getinfo(1).currentline
 
 local func_email_finished = false
 local func_find_back_finished = false
@@ -48,6 +51,37 @@ local func_open_bag_finished = false
 local func_find_xishi_finished = false
 local func_datu_finished = false
 local func_welfare_icon_finished = false
+
+function init_variable()
+
+	bag_switch = true
+	xishi_switch = false
+	next_charactor_switch = false
+
+	time_count_flag= false
+	time_start1 = os.time()
+
+	task6 = 0 - debug.getinfo(1).currentline
+	task8 = 0 - debug.getinfo(1).currentline
+	task9 = 0 - debug.getinfo(1).currentline
+	task7 = 0 - debug.getinfo(1).currentline
+	task_datu= 0 - debug.getinfo(1).currentline
+	thread_409 = 0 - debug.getinfo(1).currentline
+	thread_410 = 0 - debug.getinfo(1).currentline
+	training_task = 0 - debug.getinfo(1).currentline
+	task12  = 0 - debug.getinfo(1).currentline
+	task3 = 0 - debug.getinfo(1).currentline
+	task4 = 0 - debug.getinfo(1).currentline
+	task777 = 0 - debug.getinfo(1).currentline
+	task14 = 0 - debug.getinfo(1).currentline
+	func_email_finished = false
+	func_find_back_finished = false
+	func_open_bag_finished = false
+	func_find_xishi_finished = false
+	func_datu_finished = false
+	func_welfare_icon_finished = false
+
+end
 
 --dofile(XXT_PHONE_PATH.."FUNCTION_PART.lua")
 
@@ -239,7 +273,7 @@ end
 function close_all_window()
 	while (true) do			
 		wwlog(debug.getinfo(1).currentline..":关闭所有窗口，准备退出当前角色")				
-		local ret = task_by_loop2(list13)
+		local ret = task_by_loop2(list_close_all_windows)
 		if (ret ==nil  )  then
 			wwlog("没有窗口了")
 			break
@@ -249,6 +283,7 @@ function close_all_window()
 end
 
 function func_click_menu()
+	local list_func_menu = func_list_func_menu()
 	while (true) do		
 		wwlog(debug.getinfo(1).currentline..":点击功能菜单")				
 		local ret = task_by_order2(list_func_menu)	
@@ -262,6 +297,7 @@ function func_click_menu()
 end
 
 function func_click_setup()
+	local list_setup = func_list_setup()
 	while (true) do
 		--if next_charactor_switch == true then
 		wwlog(debug.getinfo(1).currentline..":点击设置按钮")				
@@ -292,6 +328,7 @@ end
 
 --找回
 function func_find_back ()
+	local list_find_back = func_list_find_back() 
 	while (true) do
 		if find_back_switch == true then
 			wwlog(debug.getinfo(1).currentline..":找回")				
@@ -309,6 +346,7 @@ end
 
 
 function func_open_bag()
+	local list_bag = func_list_bag()
 	while (true) do
 		if bag_switch == true  then
 			wwlog(debug.getinfo(1).currentline..":打开背包")				
@@ -332,6 +370,7 @@ end
 
 
 function func_find_xishi()
+	local list_xishi_map = func_list_xishi_map()
 	while (true) do
 		if xishi_switch == true then
 			--wwlog(debug.getinfo(1).currentline..":找寻稀世藏宝图")
@@ -378,6 +417,7 @@ end
 
 
 function func_welfare_icon ()
+	local list_welfare_icon = func_list_welfare_icon()
 	while (true) do
 		if welfare_switch == true then
 			wwlog(debug.getinfo(1).currentline..":点击福利图标")				
@@ -406,8 +446,9 @@ function func_monitor_popup()
 end
 
 function func_training()
-	local current_thread_id = thread.current_id()	
-	wwlog(debug.getinfo(1).currentline..":登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
+	--local current_thread_id = thread.current_id()	
+	--wwlog(debug.getinfo(1).currentline..":登录成功之后，进入游戏:thread.current_id:"..tostring( current_thread_id))				
+	local list_training = func_list_training()
 	while(true) do	
 		if training_switch ==true then			
 			mrsleep(1000)			
@@ -607,6 +648,7 @@ task1 = thread.dispatch(
 				end	
 
 				if ret == "end_color" then
+					init_variable()
 					if VAR_LIST1.FIRST_CHARACTOR =="NEW" then
 						ltap(119,  168) --点击左侧第一个角色，没有则直接创建，走新手任务
 						mrsleep(2000)
@@ -645,40 +687,52 @@ task1 = thread.dispatch(
 )
 wwlog("task1:"..tostring(task1))
 
---监测角色是否成功登入主界面
-task14= thread.dispatch( 
-	function()
-		while (true) do			
-			wwlog(debug.getinfo(1).currentline..":监测角色是否成功登入主界面")				
-			local ret = task_by_foo2(list_main_task)
-			if ret == "player_in"  then
-				nLog("before func_email")
+function monitor_homepage_in ()
+	while (true) do			
+		wwlog(debug.getinfo(1).currentline..":监测角色是否成功登入主界面")				
+		local ret = task_by_foo2(list_main_task)
+		if ret == "player_in"  then
+			--nLog("before func_email")
+			if task4 < 0 then
 				task4= thread.timer_start(1,
 					function()
 						func_email()
 						check_popup()
 					end
 				)
-				--[[
+			end
+			--[[
 				task3 = thread.timer_start(5, 
 					function() 
 						func_home_page()
 					end
 				)
 				--]]
+			if task777 < 0 then
 				task777= thread.timer_start(1,
 					function()
 						func_monitor_popup()
 					end
 				)
-
-				break		
 			end
-			mrsleep(SLEEP_TIME)
+			--break		
 		end
-		nLog("exit 监测角色是否成功登入主界面")
+		mrsleep(SLEEP_TIME)
 	end
-)
+	nLog("exit 监测角色是否成功登入主界面")
+end
+
+--监测角色是否成功登入主界面
+function task_monitor_homepage_in()
+	if task14 < 0 then
+		task14= thread.timer_start(1, 
+			function ()
+				monitor_homepage_in()
+			end
+		)
+	end
+end
+task_monitor_homepage_in()
 wwlog("task14:"..tostring(task14))
 
 --主线任务，静止不动的话，就点一下
@@ -689,12 +743,12 @@ task888 = thread.dispatch(
 			if main_task_switch ==true and TAB_ENV.MAIN_TASK_SWITCH ==true then
 				wwlog(debug.getinfo(1).currentline..":主线任务，静止不动的话，就点一下")	
 				if f_no_color_changed() then
-					local ret = task_by_loop2(list04)
-				end 
-			end 
-			mrsleep(5000)
-		end 
-	end 
+	local ret = task_by_loop2(list04)
+end 
+end 
+mrsleep(5000)
+end 
+end 
 ) 
 wwlog("task888:"..tostring(task888))
 --]]
