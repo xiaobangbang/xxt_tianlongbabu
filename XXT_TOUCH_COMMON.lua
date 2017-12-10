@@ -173,6 +173,10 @@ function List.poplast(list)
 	return value
 end
 
+function  getListSize(list1)	
+	return list1.last + 1
+end	
+
 function getClickXY(color_arr)
 	local click_index = #color_arr
 	local click_xy = color_arr[click_index] 
