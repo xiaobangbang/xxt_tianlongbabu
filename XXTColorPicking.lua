@@ -80,7 +80,7 @@ page_login_entrance.player_name_exist.color={
 	{  559,  421, 0xfcf5d1},
 	{  579,  419, 0xfef7d4},
 }
-page_login_entrance.player_name_exist.following_function=true
+--page_login_entrance.player_name_exist.following_function=true
 page_login_entrance.player_name_exist.logmsg="角色名称重复"
 
 page_login_entrance.player_enter_game={}

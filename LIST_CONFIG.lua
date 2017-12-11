@@ -231,7 +231,7 @@ end
 list_after_login= List.new()
 List.pushlast(list_after_login,page_clear.welfare_window)
 List.pushlast(list_after_login,page_training.in_game_training)
-List.pushlast(list_after_login,page_main_task.task_button)
+--List.pushlast(list_after_login,page_main_task.task_button)
 
 
 list_close_all_windows= List.new()

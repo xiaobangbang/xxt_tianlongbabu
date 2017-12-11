@@ -184,9 +184,11 @@ function task_by_loop2(list1)
 					wwlog(v.logmsg)
 					dosomething2(v1,v)
 					mrsleep(SLEEP_TIME)
+					--[[
 					if v.following_function then
 						ret = "following_function"						
 					end	
+					--]]
 					if v.end_color then
 						ret = "end_color"						
 					end	
@@ -640,12 +642,14 @@ task1 = thread.dispatch(
 			if login_switch ==true then
 				--wwlog(debug.getinfo(1).currentline..":登录模块:thread.current_id:"..tostring( current_thread_id))				
 				local ret =task_by_loop2(list_login)				
+				--[[
 				if ret =="following_function" then					
 					nLog("新手训练任务开启")
 					if training_task <0 then
 						training_task = thread.timer_start(5,function() func_training() end)
 					end
 				end	
+				--]]
 
 				if ret == "end_color" then
 					init_variable()
