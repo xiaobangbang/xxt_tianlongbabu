@@ -173,6 +173,33 @@ function List.poplast(list)
 	return value
 end
 
+function List.popList (list1,k1)
+	if getListSize(list1) > 2 then
+		for k,v in pairs(list1) do			
+			local value= list1[k1]
+			print(value)
+			list1[k1] = nil
+
+			if k1 == list1.last then
+				local last = list1.last
+				local value = list1[last]
+				if list1.first ~= list1.last then
+					list1.last = last -1
+				end
+
+			end
+
+			if k1 == list1.first then
+				local first = list1.first				
+				local value= list1[first]				
+				if list1.first ~= list1.last then
+					list1.first= first +1
+				end
+			end
+		end
+	end
+end
+
 function  getListSize(list1)	
 	return list1.last + 1
 end	

@@ -570,7 +570,7 @@ page_main.arti_fact_piece_guide.colors={{
 		{  493,  370, 0xe2e201},
 		{  545,  373, 0xd5d5d5},
 	}}
-page_main.arti_fact_piece_guide.step="page_main.arti_fact_piece_guide"
+page_main.arti_fact_piece_guide.once= true
 page_main.arti_fact_piece_guide.logmsg="领取神器碎片"
 page_main.arti_fact_piece_guide.click_xy={463,  500}
 
@@ -994,6 +994,12 @@ page_welfare={}
 page_welfare.welfare_find_back={}
 page_welfare.welfare_find_back.colors={
 	{
+	{  216,  545, 0xc9b899},
+	{  185,  545, 0x391f08},
+	{  223,  548, 0x391f08},
+	{  233,  548, 0x472e16},
+},
+	{
 		{  175,  477, 0xc9b899},
 		{  185,  482, 0x381e07},
 		{  289,  464, 0xcc1206},
@@ -1267,6 +1273,7 @@ page_clear.welfare_window.colors={
 		{  238,   89, 0x694220},
 		{ 1082,   64, 0xfff7b5},
 	}}
+--page_clear.welfare_window.once= true
 page_clear.welfare_window.foo2 = function() return "welfare_window" end
 page_clear.welfare_window.logmsg="在领取邮件之前，关闭福利弹窗"
 

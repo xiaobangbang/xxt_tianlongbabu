@@ -23,6 +23,10 @@ local welfare_switch = true
 local find_back_switch = true
 local datu_switch = true
 
+local training_mode = false
+local email_ready =  false
+local popup_ready = false
+local login_finished = false
 
 local bag_switch = true
 local xishi_switch = false
@@ -60,6 +64,11 @@ function init_variable()
 
 	time_count_flag= false
 	time_start1 = os.time()
+	
+	training_mode = false
+	email_ready =  false
+	popup_ready = false
+	login_finished = false
 
 	task6 = 0 - debug.getinfo(1).currentline
 	task8 = 0 - debug.getinfo(1).currentline
@@ -92,6 +101,8 @@ end
 ttoast("屏幕已解锁，脚本开始")
 
 init_screen(1)
+
+
 if TAB_ENV.DEBUG_MODE==false then
 	close_app("com.tencent.cyoutstl")
 	mrsleep(5000)
@@ -105,9 +116,74 @@ elseif  front_app() ~= "com.tencent.cyoutstl" then
 	mrsleep(500)		
 end
 
+
+local dlg = dialog() -- 创建一个 dialog 对象
+-- 以下为此 dialog 对象配置
+dlg:config('tianlong') -- 配置保存ID
+dlg:timeout(10)
+--dlg:add_label('天龙八部配置')
+dlg:add_label('运行方式：当天首次运行，从第一个角色开始，按顺序运行')
+dlg:add_label('运行方式：继续运行：跑完的角色，当天不再运行')
+dlg:add_radio('运行方式', {'当天首次运行', '继续运行'}, '继续运行')
+dlg:add_label('点击间隔时间-毫秒:手机配置较低的话，可以把值调大一些')
+dlg:add_range('点击间隔时间', {500, 3000, 100}, 1000)
+dlg:add_label('账号切换时间-秒:当前角色遇到运行异常，等待xx秒则切换下一个角色')
+dlg:add_range('账号切换时间', {90, 300, 1}, 100)
+dlg:add_input('大区', '100')
+dlg:add_picker('稀世藏宝图获取方式', {'找回', '副本'}, '找回')
+dlg:add_switch('调试模式', true)
+dlg:add_switch('文本日志', true)
+dlg:add_checkbox('游戏模式', {'任务', '稀世藏宝图', '福利'}, {'福利', '稀世藏宝图'})
+dlg:add_switch('微信公众号暂停游戏', false)
+dlg:add_radio('账号类型', {'微信', 'QQ', '游客'}, '微信')
+local confirm, selects = dlg:show() -- 显示 dialog 对象到前台并获得其返回值
+if (confirm) then
+    print("你按下了提交")
+else
+    print("你没有按下提交")
+end
+print("点击间隔时间(毫秒)", selects["点击间隔时间"])
+print("账号切换时间(秒)", selects["账号切换时间"])
+print("大区", selects["大区"])
+print("稀世藏宝图获取方式", selects["稀世藏宝图获取方式"])
+
+if (selects['运行方式'] =="当天首次运行") then
+    print("当天首次运行")
+	TAB_ENV.FIRST_TIME_OF_DAY = true
+else
+	print("继续运行")
+	TAB_ENV.FIRST_TIME_OF_DAY = false	
+end
+
+
+if (selects['调试模式']) then
+    print("你开启了调试模式")
+	TAB_ENV.DEBUG_MODE = true
+else
+	print("你关闭了调试模式")
+	TAB_ENV.DEBUG_MODE = false
+end
+if (selects['文本日志']) then
+    print("你开启了文本日志")	
+else
+	print("你关闭了文本日志")
+end
+print("游戏模式")
+for _,gamename in ipairs(selects['游戏模式']) do
+    print(gamename)
+end
+print("账号类型:"..selects["账号类型"])
+sys.alert(print.out(),5)
+
+
+
+
+
+
+
 if TAB_ENV.DEBUG_MODE==true then	
-	wwlog("等待10 秒钟")
-	mrsleep(10000)
+	wwlog("等待5 秒钟")
+	mrsleep(5000)
 end
 
 local start_time=os.time()
@@ -132,9 +208,10 @@ if TAB_ENV.FIRST_TIME_OF_DAY == true then
 	VAR_LIST1.SECOND_CHARACTOR="NEW"
 	VAR_LIST1.THIRD_CHARACTOR="NEW"
 	VAR_LIST1.FOUTH_CHARACTOR="NEW"
+	record_var1(VAR_LIST1,XXT_PHONE_PATH.."VAR_SERIALIZE.lua")
 end 
 
-record_var1(VAR_LIST1,XXT_PHONE_PATH.."VAR_SERIALIZE.lua")
+
 
 function func_email ()
 	while (true) do
@@ -144,7 +221,7 @@ function func_email ()
 			local ret = task_by_loop2(list_email)
 			if  ret =="end_color"   then
 				--wwlog("邮件线程关闭")
-				func_email_finished =  true
+				--func_email_finished =  true
 				time_count_flag= true
 				break
 			end
@@ -189,6 +266,9 @@ function task_by_loop2(list1)
 						ret = "following_function"						
 					end	
 					--]]
+					if v.once ~= nil then
+						List.popList(list1,k)
+					end
 					if v.end_color then
 						ret = "end_color"						
 					end	
@@ -221,6 +301,9 @@ function task_by_foo2(list1)
 						List.popfirst(list1)
 					end
 					--]]
+					if v.once ~= nil then
+						List.popList(list1,k)
+					end
 					if v.foo2 ~= nil then
 						return v.foo2()		
 					end
@@ -333,11 +416,11 @@ function func_find_back ()
 	local list_find_back = func_list_find_back() 
 	while (true) do
 		if find_back_switch == true then
-			wwlog(debug.getinfo(1).currentline..":找回")				
+			--wwlog(debug.getinfo(1).currentline..":找回")				
 			local ret = task_by_order2(list_find_back)
 			if ( ret =="end_color" )  then
 				wwlog("找回，下拉到最底部，skip while" )
-				func_find_back_finished = true
+				--func_find_back_finished = true
 				break					
 			end
 		end
@@ -413,7 +496,7 @@ function func_datu ()
 		end
 		mrsleep(SLEEP_TIME)
 	end
-	func_datu_finished = true	
+	--func_datu_finished = true	
 	nLog("func_datu exit")
 end
 
@@ -427,8 +510,7 @@ function func_welfare_icon ()
 
 			if ret == "end_color" then
 				wwlog("退出while 循环")
-				func_welfare_icon_finished = true
-
+				--func_welfare_icon_finished = true
 				break
 			end
 		end
@@ -439,7 +521,7 @@ end
 
 function func_monitor_popup()
 	while (true) do
-		if popup_switch == true  then --领取邮件之后，接着领取福利，然后在使用/领用奖励
+		if popup_switch == true  then 
 			--wwlog(debug.getinfo(1).currentline..":处理物品、装备、弹窗")				
 			local ret = task_by_loop2(list_popup)				
 		end
@@ -481,13 +563,18 @@ function func_after_login()
 		wwlog(debug.getinfo(1).currentline.."in:func_after_login")
 		local ret = task_by_foo2(list_after_login)							
 		if ret == "training" then
+			training_mode = true
+			--[[
 			if training_task <0 then
 				training_task = thread.timer_start(5,function() func_training() end)
 			end
+			--]]
 			break		
 		elseif ret == "welfare_window" then
-			ltap(1082,   64)
-			wwlog(debug.getinfo(1).currentline..":关闭弹窗，领取邮件作为第一个任务开始")
+			--ltap(1082,   64)
+			--wwlog(debug.getinfo(1).currentline..":关闭弹窗，领取邮件作为第一个任务开始")
+			func_welfare_icon_finished = true
+			wwlog("直接找回")
 			break
 		end 
 		mrsleep(SLEEP_TIME)
@@ -495,7 +582,31 @@ function func_after_login()
 	nLog("after  func_after_login while")
 end
 
+function monitor_homepage_in ()
+	while (true) do			
+		wwlog(debug.getinfo(1).currentline..":监测角色是否成功登入主界面")				
+		local ret = task_by_foo2(list_main_task)
+		if ret == "player_in"  then
+			--nLog("before func_email")
+			email_ready =  true
+			popup_ready = true	
+			break
+			--break		
+		elseif ret =="welfare_window" then
+			func_welfare_icon_finished = true
+			email_ready =  true
+			popup_ready = true	
+			wwlog("func_welfare_icon_finished = true")
+			break
+		end
+		mrsleep(SLEEP_TIME)
+	end
+	nLog("exit 监测角色是否成功登入主界面")
+end
 
+
+------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------
 task_ftp = thread.dispatch( 
 	function()
 		while(true) do 
@@ -545,7 +656,46 @@ task0 = thread.dispatch(
 	function()
 		while(true) do 			
 			wwlog(debug.getinfo(1).currentline..":backgroud monitor thread ")	
-			--如果找不到稀世藏宝图，领取邮件3分钟之后，换下一个角色
+			
+			if task14 < 0 then
+				task14= thread.timer_start(1, 
+							function ()
+								monitor_homepage_in()
+							end
+				)
+			end
+			
+			if training_mode == true and training_task <0 then					
+					nLog("新手训练任务开启")					
+					training_task = thread.timer_start(1,function() func_training() end)					
+			end	
+			
+			if email_ready ==  true and task4 < 0  then			
+				task4= thread.timer_start(1,
+					function()
+						func_email()
+						func_email_finished = true
+						check_popup()
+					end
+				)			
+			end
+			
+			if popup_ready ==  true and task777 < 0 then				
+				task777= thread.timer_start(1,
+					function()
+						func_monitor_popup()
+					end
+				)			
+			end
+			
+			if login_finished == true and task12 < 0 then				
+					task12 = thread.timer_start(1,
+						function()
+							func_after_login()
+						end
+					)
+			end
+			
 			if func_email_finished == true and time_count_flag== true then
 				time_count_flag = false
 				time_start1 = os.time()
@@ -559,6 +709,10 @@ task0 = thread.dispatch(
 				else
 					nLog("当前时间:"..tostring( os.time()))
 				end
+				if task12 > 0 then
+					nLog("thread.timer_stop(task12)")
+					thread.timer_stop(task12)
+				end
 			end			
 			if next_charactor_switch == true and thread_409 < 0 then				
 				close_all_window()
@@ -566,18 +720,16 @@ task0 = thread.dispatch(
 						func_click_menu()
 					end)
 				mrsleep(500)
-				thread_410 = thread.timer_start(5,function() 						
+				thread_410 = thread.timer_start(3,function() 						
 						func_click_setup()
 					end)
 			end
 
-			if func_email_finished == true and task6 < 0 then
-				--点击福利图标
-				if task12 > 0 then
-					thread.timer_stop(task12)
-				end
+			if func_email_finished == true and task6 < 0 and func_welfare_icon_finished == false then
+				--点击福利图标				
 				task6= thread.timer_start(1,function()
 						func_welfare_icon()
+						func_welfare_icon_finished = true
 						wwlog("after func_welfare_icon()")
 					end
 				)
@@ -586,17 +738,21 @@ task0 = thread.dispatch(
 			if func_welfare_icon_finished == true and task7 <0 then
 				task7= thread.timer_start(1,
 					function()
-						func_find_back()						
+						func_find_back()
+						func_find_back_finished = true
 						wwlog("task 7 :func_find_back()..............end")
 					end
 				)
 			end
 
 			if func_find_back_finished ==  true and task_datu < 0  then 
-				task_datu = thread.timer_start(1,function() func_datu() end)	
+				task_datu = thread.timer_start(1,function() 
+						func_datu() 
+						func_datu_finished = true	
+						end)	
 			end
 
-			if func_datu_finished == true and task8 <0  then
+			if func_datu_finished == true and func_email_finished == true and task8 <0  then
 				--打开背包，检测稀世
 				task8= thread.timer_start(1,
 					function()
@@ -606,7 +762,7 @@ task0 = thread.dispatch(
 				)
 			end
 			--找寻稀世藏宝图
-			if func_datu_finished == true and task9 <0  then
+			if func_datu_finished == true and func_email_finished == true and task9 <0  then
 				task9= thread.timer_start(3,
 					function()
 						func_find_xishi()
@@ -677,12 +833,7 @@ task1 = thread.dispatch(
 				end 
 
 				if ret == "end_color" and task12 < 0 then 
-					nLog("before func_after_login")
-					task12 = thread.timer_start(5,
-						function()
-							func_after_login()
-						end
-					)
+					login_finished = true					
 				end
 			end
 			mrsleep(SLEEP_TIME)
@@ -691,53 +842,6 @@ task1 = thread.dispatch(
 )
 wwlog("task1:"..tostring(task1))
 
-function monitor_homepage_in ()
-	while (true) do			
-		wwlog(debug.getinfo(1).currentline..":监测角色是否成功登入主界面")				
-		local ret = task_by_foo2(list_main_task)
-		if ret == "player_in"  then
-			--nLog("before func_email")
-			if task4 < 0 then
-				task4= thread.timer_start(1,
-					function()
-						func_email()
-						check_popup()
-					end
-				)
-			end
-			--[[
-				task3 = thread.timer_start(5, 
-					function() 
-						func_home_page()
-					end
-				)
-				--]]
-			if task777 < 0 then
-				task777= thread.timer_start(1,
-					function()
-						func_monitor_popup()
-					end
-				)
-			end
-			--break		
-		end
-		mrsleep(SLEEP_TIME)
-	end
-	nLog("exit 监测角色是否成功登入主界面")
-end
-
---监测角色是否成功登入主界面
-function task_monitor_homepage_in()
-	if task14 < 0 then
-		task14= thread.timer_start(1, 
-			function ()
-				monitor_homepage_in()
-			end
-		)
-	end
-end
-task_monitor_homepage_in()
-wwlog("task14:"..tostring(task14))
 
 --主线任务，静止不动的话，就点一下
 --[[

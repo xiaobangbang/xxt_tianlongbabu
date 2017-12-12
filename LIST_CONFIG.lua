@@ -239,3 +239,4 @@ List.pushlast(list_close_all_windows,page_close.all_big_window)
 
 list_main_task= List.new()
 List.pushlast(list_main_task,page_main_task.task_button)
+List.pushlast(list_main_task,page_clear.welfare_window)
